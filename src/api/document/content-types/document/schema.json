@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "documents",
+  "info": {
+    "singularName": "document",
+    "pluralName": "documents",
+    "displayName": "Document",
+    "description": "Stores documents to be signed and their metadata"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "docStatus": {
+      "type": "string",
+      "default": "draft"
+    },
+    "pdfUrl": {
+      "type": "string"
+    },
+    "pdfHash": {
+      "type": "string"
+    },
+    "signType": {
+      "type": "enumeration",
+      "enum": ["CA", "ESIGN"],
+      "default": "ESIGN"
+    },
+    "metadata": {
+      "type": "json"
+    }
+  }
+}

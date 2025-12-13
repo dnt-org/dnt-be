@@ -1,0 +1,88 @@
+{
+  "kind": "singleType",
+  "collectionName": "system_infos",
+  "info": {
+    "singularName": "system-info",
+    "pluralName": "system-infos",
+    "displayName": "System Info",
+    "description": "System metrics and information"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "listedValue": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "transactions": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "accesses": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "successfully": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "amount": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "duration": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "latestBank": {
+      "type": "string",
+      "required": false
+    },
+    "deposited": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "videoViews": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "withdrawn": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "members": {
+      "type": "integer",
+      "default": 0,
+      "required": false
+    },
+    "remaining": {
+      "type": "biginteger",
+      "default": 0,
+      "required": false
+    },
+    "online": {
+      "type": "integer",
+      "default": 0,
+      "required": false
+    },
+    "hasExpiry": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "lastUpdated": {
+      "type": "datetime",
+      "required": false
+    }
+  }
+}

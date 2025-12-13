@@ -1,0 +1,223 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "size": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "askingPrice": {
+      "type": "decimal"
+    },
+    "displayPrice": {
+      "type": "boolean",
+      "default": true
+    },
+    "hidePrice": {
+      "type": "boolean",
+      "default": false
+    },
+    "location": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text"
+    },
+    "estimatedValue": {
+      "type": "decimal"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "qualityFiles": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "deliveryDate": {
+      "type": "date",
+      "description": "Day of delivery after accept"
+    },
+    "depositRequirement": {
+      "type": "string",
+      "description": "Deposit requirement"
+    },
+    "autoAcceptPrice": {
+      "type": "decimal",
+      "description": "Price to automatically accept"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "marketPrice": {
+      "type": "decimal"
+    },
+    "lowUnitPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "lowestUnitAskingPrice": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Lowest unit asking price"
+    },
+    "highestUnitAskingPrice": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Highest unit asking price"
+    },
+    "deliveryDays": {
+      "type": "integer",
+      "min": 0,
+      "description": "Number of days to delivery after accept"
+    },
+    "endPostTime": {
+      "type": "datetime",
+      "description": "End post time"
+    },
+    "lowestAmount": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Lowest amount"
+    },
+    "highestAmount": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Highest amount"
+    },
+    "lowestAutoAcceptPrice": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Lowest price to automatically accept"
+    },
+    "highestAutoAcceptPrice": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Highest price to automatically accept"
+    },
+    "contractDuration": {
+      "type": "integer",
+      "min": 0,
+      "description": "Contract duration in days"
+    },
+    "personInCharge": {
+      "type": "string",
+      "description": "Other person in charge"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "confirmOwnership": {
+      "type": "boolean",
+      "default": false,
+      "description": "Confirm ownership and responsibility about the goods"
+    },
+    "eventFeePercentage": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100,
+      "description": "Event fee percentage"
+    },
+    "livestreamFee": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Livestream fee"
+    },
+    "advertisingAmount": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Amount for advertising"
+    },
+    "showOnMainPage": {
+      "type": "decimal",
+      "default": 0,
+      "description": "Display on main page"
+    },
+    "showOnVideo": {
+      "type": "decimal",
+      "default": 0,
+      "description": "Display on video"
+    },
+    "advertisingUrl": {
+      "type": "string",
+      "description": "Advertising content URL"
+    },
+    "registerForAdvertising": {
+      "type": "boolean",
+      "default": false,
+      "description": "Register to make advertising"
+    },
+    "successFee": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Success fee"
+    },
+    "totalFees": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Total fees"
+    },
+    "listingType": {
+      "type": "string",
+      "required": true,
+      "default": "sale"
+    },
+    "categoryType": {
+      "type": "string",
+      "required": true,
+      "default": "goods"
+    },
+    "conditionType": {
+      "type": "string",
+      "default": "new",
+      "required": true
+    },
+    "nation": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string"
+    },
+    "custom_id": {
+      "type": "string",
+      "required": false
+    },
+    "setPrice": {
+      "type": "decimal"
+    }
+  }
+}

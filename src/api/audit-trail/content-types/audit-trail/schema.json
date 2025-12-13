@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audit_trails",
+  "info": {
+    "singularName": "audit-trail",
+    "pluralName": "audit-trails",
+    "displayName": "Audit trails"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "product_id": {
+      "type": "string",
+      "required": true
+    },
+    "event": {
+      "type": "string"
+    },
+    "msg_details": {
+      "type": "string"
+    },
+    "action_by": {
+      "type": "string"
+    },
+    "action_at": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}

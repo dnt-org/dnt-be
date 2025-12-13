@@ -1,0 +1,7 @@
+{
+  "name": "system-logs",
+  "version": "0.1.0",
+  "strapi": {
+    "name": "system-logs"
+  }
+}

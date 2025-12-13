@@ -1,0 +1,310 @@
+{
+  "info": {
+    "name": "Auth API Collection",
+    "description": "Complete authentication API collection for Strapi CMS Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:1337/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "User Registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePassword123\",\n  \"cccd\": \"123456789012\",\n  \"reference_id\": \"REF001\",\n  \"full_name\": \"John Doe\",\n  \"mobile_number\": \"+1234567890\",\n  \"bank_number\": \"1234567890\",\n  \"bank_name\": \"Example Bank\",\n  \"address_no\": \"123 Main St\",\n  \"address_on_map\": \"123 Main St, City, Country\",\n  \"avt\": \"https://example.com/avatar.jpg\",\n  \"signature\": \"https://example.com/signature.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        },
+        "description": "Register a new user with complete profile information"
+      },
+      "response": []
+    },
+    {
+      "name": "User Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cccd\": \"123456789012\",\n  \"password\": \"SecurePassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        },
+        "description": "Login with CCCD and password to get JWT token"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    pm.collectionVariables.set('authToken', response.token);",
+              "    console.log('Auth token saved:', response.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Change Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"SecurePassword123\",\n  \"newPassword\": \"NewSecurePassword456\",\n  \"confirmPassword\": \"NewSecurePassword456\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/change-password",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "change-password"]
+        },
+        "description": "Change user password with current password verification"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Current User (Me)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "me"]
+        },
+        "description": "Get current authenticated user information"
+      },
+      "response": []
+    },
+    {
+      "name": "Update User Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"John Updated Doe\",\n  \"mobile_number\": \"+1234567891\",\n  \"bank_number\": \"9876543210\",\n  \"bank_name\": \"Updated Bank\",\n  \"address_no\": \"456 Updated St\",\n  \"address_on_map\": \"456 Updated St, New City, Country\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/update",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "update"]
+        },
+        "description": "Update user profile information"
+      },
+      "response": []
+    },
+    {
+      "name": "Search User by CCCD",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/search?cccd=123456789012",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "search"],
+          "query": [
+            {
+              "key": "cccd",
+              "value": "123456789012",
+              "description": "CCCD number to search for"
+            }
+          ]
+        },
+        "description": "Search for a user by their CCCD number"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate QR Code",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"deviceInfo\": \"Web Browser Chrome 120\",\n  \"ipAddress\": \"192.168.1.100\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/generate-qr",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "generate-qr"]
+        },
+        "description": "Generate QR code for mobile app login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    pm.collectionVariables.set('sessionId', response.sessionId);",
+              "    console.log('Session ID saved:', response.sessionId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Verify QR Code (Mobile)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"cccd\": \"123456789012\",\n  \"password\": \"SecurePassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/verify-qr",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "verify-qr"]
+        },
+        "description": "Verify QR code with user credentials (called by mobile app)"
+      },
+      "response": []
+    },
+    {
+      "name": "Complete QR Login (Web)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"{{sessionId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/qr-login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "qr-login"]
+        },
+        "description": "Check QR login status and get token when authenticated (polled by web client)"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    if (response.status === 'authenticated' && response.token) {",
+              "        pm.collectionVariables.set('authToken', response.token);",
+              "        console.log('QR Login successful, token saved:', response.token);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('Making request to:', pm.request.url.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response has valid JSON', function () {",
+          "    pm.response.to.have.jsonBody();",
+          "});"
+        ]
+      }
+    }
+  ]
+}

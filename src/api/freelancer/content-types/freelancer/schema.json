@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "freelancers",
+  "info": {
+    "singularName": "freelancer",
+    "pluralName": "freelancers",
+    "displayName": "Freelancer",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "estimate": {
+      "type": "text"
+    },
+    "requirement": {
+      "type": "text"
+    },
+    "startDate": {
+      "type": "datetime"
+    },
+    "endDate": {
+      "type": "datetime"
+    },
+    "startLocation": {
+      "type": "string"
+    },
+    "endLocation": {
+      "type": "string"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "deposit": {
+      "type": "decimal"
+    },
+    "serviceFee": {
+      "type": "decimal"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "online",
+        "offline"
+      ]
+    },
+    "create_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "pic": {
+      "type": "string"
+    }
+  }
+}

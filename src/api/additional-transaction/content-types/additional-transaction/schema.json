@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "additional_transactions",
+  "info": {
+    "singularName": "additional-transaction",
+    "pluralName": "additional-transactions",
+    "displayName": "Additional transaction",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "cccd": {
+      "type": "string",
+      "required": true,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "full_name": {
+      "type": "string",
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "bill": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "stt": {
+      "type": "enumeration",
+      "enum": [
+        "WAITING",
+        "DONE",
+        "REJECTED",
+        "APPROVED_BY_AUTOMATION"
+      ],
+      "default": "WAITING",
+      "required": true,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "reason": {
+      "type": "string",
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "handle_by": {
+      "type": "string",
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "with_drawth_transactions",
+  "info": {
+    "singularName": "with-drawth-transaction",
+    "pluralName": "with-drawth-transactions",
+    "displayName": "With drawth transaction",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "cccd": {
+      "type": "string",
+      "required": true
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "decimal"
+    },
+    "bill": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "note": {
+      "type": "string"
+    },
+    "stt": {
+      "type": "enumeration",
+      "enum": [
+        "WAITING",
+        "DONE",
+        "REJECTED"
+      ]
+    },
+    "handle_by": {
+      "type": "string"
+    }
+  }
+}

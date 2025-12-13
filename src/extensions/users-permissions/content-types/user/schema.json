@@ -1,0 +1,122 @@
+{
+  "kind": "collectionType",
+  "collectionName": "up_users",
+  "info": {
+    "name": "user",
+    "description": "",
+    "singularName": "user",
+    "pluralName": "users",
+    "displayName": "User"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "username": {
+      "type": "string",
+      "configurable": false,
+      "required": false
+    },
+    "email": {
+      "type": "string",
+      "minLength": 6,
+      "configurable": false,
+      "required": false
+    },
+    "provider": {
+      "type": "string",
+      "configurable": false
+    },
+    "password": {
+      "type": "password",
+      "minLength": 6,
+      "configurable": false,
+      "private": true,
+      "searchable": false
+    },
+    "resetPasswordToken": {
+      "type": "string",
+      "configurable": false,
+      "private": true,
+      "searchable": false
+    },
+    "confirmationToken": {
+      "type": "string",
+      "configurable": false,
+      "private": true,
+      "searchable": false
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false,
+      "configurable": false
+    },
+    "blocked": {
+      "type": "boolean",
+      "default": false,
+      "configurable": false
+    },
+    "role": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.role",
+      "inversedBy": "users"
+    },
+    "reference_id": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "mobile_number": {
+      "type": "string"
+    },
+    "bank_number": {
+      "type": "string"
+    },
+    "bank_name": {
+      "type": "string"
+    },
+    "address_no": {
+      "type": "string"
+    },
+    "address_on_map": {
+      "type": "string"
+    },
+    "cccd": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "is_ctv": {
+      "type": "boolean"
+    },
+    "avt": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "wallet": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::wallet.wallet"
+    },
+    "favorite_wallets": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::wallet.wallet",
+      "mappedBy": "user"
+    },
+    "signature": {
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

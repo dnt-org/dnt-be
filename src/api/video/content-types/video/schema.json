@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "videos",
+  "info": {
+    "singularName": "video",
+    "pluralName": "videos",
+    "displayName": "Video",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "savelocation": {
+      "type": "string"
+    },
+    "allowAdvertising": {
+      "type": "boolean",
+      "default": false
+    },
+    "showAd": {
+      "type": "decimal",
+      "min": 0
+    },
+    "insertAd": {
+      "type": "decimal",
+      "min": 0
+    },
+    "startFromTime": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "startFromView": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "source": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "videos"
+      ]
+    },
+    "confirmCopyright": {
+      "type": "boolean"
+    }
+  }
+}

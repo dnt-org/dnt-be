@@ -1,0 +1,41 @@
+{
+  "kind": "singleType",
+  "collectionName": "system_configurations",
+  "info": {
+    "singularName": "system-configuration",
+    "pluralName": "system-configurations",
+    "displayName": "System Configuration",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "transactionApproveMode": {
+      "type": "enumeration",
+      "enum": [
+        "auto mode",
+        "manual mode"
+      ],
+      "default": "manual mode",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "userApproveMode": {
+      "type": "enumeration",
+      "enum": [
+        "auto mode",
+        "manual mode"
+      ],
+      "default": "auto mode"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "system_logs",
+  "info": {
+    "singularName": "system-log",
+    "pluralName": "system-logs",
+    "displayName": "System Log"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "level": {
+      "type": "enumeration",
+      "enum": ["info", "warn", "error"],
+      "default": "info",
+      "required": true
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "context": {
+      "type": "json"
+    },
+    "timestamp": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}

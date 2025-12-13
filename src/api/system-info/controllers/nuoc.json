@@ -1,0 +1,1361 @@
+
+  [
+    {
+      "Nước": "Viet Nam",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0001,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "United States",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Afganistan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.039,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Albania",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.032,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Algeria",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Andorra",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.016,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Angola",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.003,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Antigua And Barbuda",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Đông Caribe"
+    },
+    {
+      "Nước": "Argentina",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Armenia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.007,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Australia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.75,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Austria",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.095,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Azerbaijan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.552,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Bahamas",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.638,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Bahrain",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 7.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Banglades",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.022,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Barbados",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.31,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Belarus",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.78,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Belgium",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Belize",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.312,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Benin",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Bhutan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.03,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Bolivia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.381,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Bosnia And Herzegovina",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.583,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Botswana",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.185,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Brazil",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.5,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Brunei",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.057,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Bulgaria",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.582,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Burkina Faso",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Burundi",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.001,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Cabo Verde",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.028,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Cambodia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0007,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Cameroon",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Canada",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.938,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Central African Republic",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Chad",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Chile",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.003,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "China",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.37,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Colombia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0007,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Comoros",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0065,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Congo",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Costa Rica",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Côte d'Ivoire",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Croatia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.334,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Cuba",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.28,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Cyprus",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 4.4,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Czech",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.128,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Denmark",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.415,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Djibouti",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.015,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Dominica",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Dominican Republic",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "DR Congo",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.93,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Ecuador",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.639,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Egypt",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.55,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "El Salvador",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.3,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Equatorial Guinea",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Eritrea",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.154,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Estonia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.17,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Eswatini",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.15,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Ethiopia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.019,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Fiji",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.176,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Finland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "France",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Gabon",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Georgia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.98,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Germany",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Ghana",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.216,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Greece",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Grenada",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Đông Caribe"
+    },
+    {
+      "Nước": "Guatemala",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.344,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Guinea",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Guinea-Bissau",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Guyana",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.013,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Haiti",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.02,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Holy See",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Honduras",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.1,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Hungary",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.008,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Iceland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.022,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "India",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.03,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Indonesia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Iran",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.00006,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Iraq",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Ireland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Israel",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.8,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Italy",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Jamaica",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.017,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Japan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.02,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Jordan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.722,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Kazakhstan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Kenya",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.02,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Kiribati",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.75,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Australia"
+    },
+    {
+      "Nước": "Kuwait",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 8.64,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Kyrgyzstan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.03,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Laos",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0001,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Latvia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Lebanon",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.00003,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Lesotho",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.152,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Liberia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.027,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Libya",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.5,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Liechtenstein",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.84,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Thụy Sỹ"
+    },
+    {
+      "Nước": "Lithuania",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Luxembourg",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Madagascar",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Malawi",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0015,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Malaysia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.62,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Maldives",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.172,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Mali",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Malta",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 6.2,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Marshall Islands",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "Mauritanie",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.066,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Mauritius",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.058,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Mexico",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.143,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Micronesia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "Moldova",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.159,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Monaco",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Mongolia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0007,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Montenegro",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.28,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Morocco",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.3,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Mozambique",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.042,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Myanmar",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0012,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Namibia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.15,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Nauru",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.268,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Nepan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.019,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Netherlands",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Newzeland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Nicaragua",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.072,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Niger",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Nigeria",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "North Korean",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.003,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "North Macedonia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.05,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Norway",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.268,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Oman",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 6.85,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Pakistan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.009,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Palau",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "Panama",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "Papua New Guinea",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.633,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Paraguay",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0004,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Peru",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.751,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Philippines",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.046,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Poland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.728,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Portuga",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Qatar",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.725,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Romania",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.612,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Russia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.032,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Rwanda",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Saint Kitts And Nevis",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Saint Lucia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Samoa",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "San marino",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Sao Tome And Principe",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0001,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Saudi Arabia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.7,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Senegal",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Serbia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.027,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Seychelles",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.018,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Sierra Leone",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.113,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Singapore",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.055,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Slovakia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Slovenia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Solomon Islands",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.322,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Somalia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "South Africa",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.152,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "South Korean",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "South Sudan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Spain",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.096,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "EU"
+    },
+    {
+      "Nước": "Sri Lanka",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.009,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "St. Vincent & The Grenadines",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Đông Caribe"
+    },
+    {
+      "Nước": "State Of Palestine",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.8,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Israel"
+    },
+    {
+      "Nước": "Sudan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Suriname",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0067,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Sweden",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.283,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Switzerland",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.31,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Syria",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Tajikistan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.277,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Tanzania",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.001,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Thailand",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.083,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Timo",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 2.6,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "USD"
+    },
+    {
+      "Nước": "Togo",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    },
+    {
+      "Nước": "Tonga",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.0,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Đông Caribe"
+    },
+    {
+      "Nước": "Trinidad And Tobago",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.39,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Tunisia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.9,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Turkey",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.064,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Turkmenistan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.754,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Tuvalu",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 1.75,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Australia"
+    },
+    {
+      "Nước": "Uganda",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0008,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Ukraine",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.064,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "United Arab Emirates",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.718,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "United kingdom",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 3.58,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Uruguay",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.066,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Uzbekistan",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.0002,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Vanuatu",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.022,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Venezuela",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.017,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Yemen",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.01,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Zambia",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.1,
+      "Kết quả DỊ": 0,
+      "Ghi chú": null
+    },
+    {
+      "Nước": "Zimbabwe",
+      "Số lượng": null,
+      "Tỉ giá DỊ": 0.005,
+      "Kết quả DỊ": 0,
+      "Ghi chú": "Tây + Trung phi"
+    }
+  ]

@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payment_transactions",
+  "info": {
+    "singularName": "payment-transaction",
+    "pluralName": "payment-transactions",
+    "displayName": "Wallet transaction",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "from_wallet": {
+      "type": "string",
+      "default": "system",
+      "required": true,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "to_wallet": {
+      "type": "string",
+      "required": true,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "comment": {
+      "type": "string",
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    },
+    "wallet_account_type": {
+      "type": "enumeration",
+      "enum": [
+        "DEFAULT",
+        "GOODS_ACCOUNT",
+        "FREELANCER_ACCOUNT",
+        "AI_LIVE_ACCOUNT"
+      ],
+      "default": "DEFAULT",
+      "required": true,
+      "configurable": false,
+      "private": false,
+      "readonly": true
+    }
+  }
+}

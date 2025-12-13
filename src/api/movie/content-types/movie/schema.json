@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "movies",
+  "info": {
+    "singularName": "movie",
+    "pluralName": "movies",
+    "displayName": "Movie",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "filename": {
+      "type": "string"
+    },
+    "watchPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "ownerPercentage": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "deposit": {
+      "type": "decimal",
+      "min": 0
+    },
+    "unitPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "adOnMainPageFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "source": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "videos"
+      ]
+    },
+    "rightsDocument": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "adContent": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

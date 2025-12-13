@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "wallets",
+  "info": {
+    "singularName": "wallet",
+    "pluralName": "wallets",
+    "displayName": "Wallet",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "total": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "default": 0
+    },
+    "account_of_goods": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "default": 0
+    },
+    "account_of_freelancer": {
+      "type": "decimal",
+      "default": 0,
+      "required": true,
+      "min": 0
+    },
+    "account_of_ailive": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "min": 0
+    },
+    "cccd": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "biginteger",
+      "required": true,
+      "unique": true
+    },
+    "pending_amount": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "favorite_wallets"
+    }
+  }
+}

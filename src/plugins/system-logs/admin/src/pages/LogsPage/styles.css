@@ -1,0 +1,114 @@
+.system-logs-page { padding: 24px; }
+.system-logs-page h1 { margin: 0 0 12px; font-size: 20px; }
+
+.filters {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.filters input,
+.filters select,
+.filters button {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+.filters button {
+  cursor: pointer;
+  background: #4945ff;
+  color: #fff;
+  border-color: #4945ff;
+}
+.filters button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.log-table thead th {
+  background: #f6f6f9;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.log-table th,
+.log-table td { border-bottom: 1px solid #e6e6e6; padding: 10px; vertical-align: top; }
+.log-table tbody tr:nth-child(even) { background: #fafafa; }
+.log-table tbody tr:hover { background: #f0f0f7; }
+
+/* Columns */
+.log-table td.timestamp { white-space: nowrap; color: #666; }
+.log-table td.message { white-space: pre-wrap; word-break: break-word; }
+
+/* Level badge */
+.level-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.level-badge.info { background: #eaf2ff; color: #1a5cff; border: 1px solid #cfe1ff; }
+.level-badge.warn { background: #fff4e5; color: #b76e00; border: 1px solid #ffe0b2; }
+.level-badge.error { background: #ffeaea; color: #d93025; border: 1px solid #ffcccc; }
+
+/* Context block */
+.context-block {
+  max-width: 480px;
+  max-height: 220px;
+  overflow: auto;
+  background: #f8f9fa;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 0;
+  font-size: 12px;
+}
+
+/* Expandable context details */
+.context-details {
+  display: block;
+}
+.context-details summary {
+  cursor: pointer;
+  list-style: disclosure-closed;
+  color: #444;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.context-details[open] summary {
+  list-style: disclosure-open;
+}
+.context-preview {
+  display: inline-block;
+  max-width: 480px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.pagination {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pagination button {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}

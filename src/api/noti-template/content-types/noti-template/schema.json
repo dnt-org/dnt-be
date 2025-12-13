@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "noti_templates",
+  "info": {
+    "singularName": "noti-template",
+    "pluralName": "noti-templates",
+    "displayName": "noti-template"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "message": {
+      "type": "string"
+    }
+  }
+}

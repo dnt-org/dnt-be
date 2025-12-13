@@ -1,0 +1,86 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lives",
+  "info": {
+    "singularName": "live",
+    "pluralName": "lives",
+    "displayName": "Live",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "expectedAiringTime": {
+      "type": "datetime"
+    },
+    "filename": {
+      "type": "string"
+    },
+    "watchPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "messagePrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "ownerPercentage": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "deposit": {
+      "type": "decimal",
+      "min": 0
+    },
+    "priceBaseLocal": {
+      "type": "decimal",
+      "min": 0
+    },
+    "unitPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "allowAdvertising": {
+      "type": "boolean",
+      "default": false
+    },
+    "showAd": {
+      "type": "decimal",
+      "min": 0
+    },
+    "startAdvertisingFromSeconds": {
+      "type": "integer",
+      "min": 0
+    },
+    "startAdvertisingFromViews": {
+      "type": "integer",
+      "min": 0
+    },
+    "rightsDocument": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "adContent": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}
