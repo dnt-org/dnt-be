@@ -21,7 +21,9 @@ module.exports = {
         path: '/system-info/metrics',
         handler: 'system-info.updateMetrics',
         config: {
-          auth: false,
+          auth: {
+            strategy: 'jwt'
+          },
           policies: [],
         },
       },

@@ -27,13 +27,12 @@ const beforeCreate = async (event) => {
       data.create_user = user.id;
       // You can set additional user-related fields here if needed
       
-      console.log('User extracted from token:', user.id);
     } catch (error) {
       console.error('Error extracting user from token:', error.message);
       // Continue with creation even if token extraction fails
     }
   } else {
-    console.log('No authorization header found in request context');
+    // No authorization header found in request context
   }
 }
 
@@ -48,23 +47,20 @@ const beforeUpdate = async (event) => {
     try {
       // Extract token from Authorization header
       const token = ctx.request.header.authorization.split(' ')[1];
-      console.log('token', token);
       // Get user from token
       const user = await getUserFromToken(token, strapi);
-      console.log('user', user);
 
       
       // Set user information in the data
       data.pic = user.id;
       // You can set additional user-related fields here if needed
       
-      console.log('User extracted from token:', user.id);
     } catch (error) {
       console.error('Error extracting user from token:', error.message);
       // Continue with creation even if token extraction fails
     }
   } else {
-    console.log('No authorization header found in request context');
+    // No authorization header found in request context
   }
 }
 

@@ -8,8 +8,8 @@ module.exports = [
         useDefaults: true,
         directives: {
           'connect-src': ["'self'", 'https:'],
-          'img-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io'],
-          'media-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io'],
+          'img-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io', 'jromefuxyhpxffrdivzx.supabase.co'],
+          'media-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io', 'jromefuxyhpxffrdivzx.supabase.co'],
           upgradeInsecureRequests: null,
         },
       },

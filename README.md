@@ -58,6 +58,14 @@ Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/
 - Copy `.env.example` to `.env` and replace `[YOUR_PASSWORD]` with your actual password. Do not commit secrets.
 - Start the app with `npm run develop` and Strapi will read the connection from `config/database.js` (`connectionString` and SSL options).
 
+## Upload (Supabase Storage)
+- Configure Strapi upload provider in `config/plugins.js:1-21`.
+- Set `SUPABASE_API_URL=https://<project-ref>.supabase.co`.
+- Set `SUPABASE_API_KEY` to the service role key to bypass RLS.
+- Set `SUPABASE_BUCKET_NAME` to your bucket (e.g., `strapi-uploads`) and optional `SUPABASE_BUCKET_DIRECTORY`.
+- Ensure CSP allows Supabase domains (`config/middlewares.js:6-17` already includes `supabase.co`).
+- If you prefer client-side policies, create storage policies permitting inserts; otherwise use the service role key.
+
 ## ✨ Community
 
 - [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.

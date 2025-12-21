@@ -37,6 +37,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
     "strapi-plugin-documentation": "^3.1.4",
+    "strapi-upload-supabase-provider": "^1.0.0",
     "styled-components": "^6.0.0"
   },
   "engines": {

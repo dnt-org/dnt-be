@@ -16,7 +16,7 @@ const beforeCreate = async (event) => {
   const transactionApproveMode = systemConfig?.transactionApproveMode || 'manual mode'; // Default to manual mode if not set
 
   if (transactionApproveMode === 'manual mode') {
-    data.stt = 'PENDING';
+    data.stt = 'WAITING';
   } else {
     data.stt = 'APPROVED_BY_AUTOMATION'; 
   }
@@ -55,7 +55,8 @@ const beforeUpdate = async (event) => {
         await strapi.entityService.update('api::wallet.wallet', wallet.id, {
           data: {
             total: wallet.total + transaction.amount
-          }
+          },
+          transaction: dbTransaction,
         });
 
         // Create payment transaction record
@@ -66,7 +67,8 @@ const beforeUpdate = async (event) => {
             to_wallet: wallet.cccd,
             comment: `Additional transaction approved for ${transaction.cccd}`,
             wallet_account_type: 'DEFAULT'
-          }
+          },
+          transaction: dbTransaction,
         });
 
         await dbTransaction.commit();

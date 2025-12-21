@@ -34,7 +34,9 @@ module.exports = {
       path: '/auth/me',
       handler: 'auth.getMe',
       config: {
-        auth: false,
+        auth: {
+          strategy: 'jwt'
+        },
         policies: [],
       },
     },
@@ -43,7 +45,9 @@ module.exports = {
       path: '/auth/update',
       handler: 'auth.updateUser',
       config: {
-        auth: false,
+        auth: {
+          strategy: 'jwt'
+        },
         policies: [],
       },
     },
@@ -65,12 +69,14 @@ module.exports = {
         policies: [],
       },
     },
-       {
+    {
       method: 'POST',
       path: '/auth/generate-qr-info',
       handler: 'auth.generateQRinfo',
       config: {
-        auth: false,
+        auth: {
+          strategy: 'jwt'
+        },
         policies: [],
       },
     },
