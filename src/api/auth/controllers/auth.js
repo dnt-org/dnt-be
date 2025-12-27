@@ -504,10 +504,23 @@ const generateQRinfo = async (ctx) => {
 // Verify QR code and authenticate user from mobile app
 const verifyQR = async (ctx) => {
   try {
-    const { sessionId, cccd, password } = ctx.request.body;
+    const { sessionId } = ctx.request.body;
 
-    if (!sessionId || !cccd || !password) {
-      return ctx.badRequest('sessionId, cccd, and password are required');
+    if (!sessionId) {
+      return ctx.badRequest('sessionId is required');
+    }
+
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authorization token required');
+    }
+
+    // Extract user data from JWT token
+    const token = authHeader.split(' ')[1];
+    const user = await getUserFromToken(token, strapi);
+    
+    if (!user) {
+      return ctx.unauthorized('Invalid or expired token');
     }
 
     // Check if session exists and is valid
@@ -525,32 +538,13 @@ const verifyQR = async (ctx) => {
       return ctx.badRequest('Session already used');
     }
 
-    // Verify user credentials
-    const existingUser = await strapi.db.query('plugin::users-permissions.user').findOne({
-      where: { cccd: cccd },
-      populate: ["avt.url"],
-    });
-
-    if (!existingUser) {
-      return ctx.unauthorized('Invalid credentials');
-    }
-
-    const validPassword = await verifyPassword(password, existingUser.password);
-    if (!validPassword) {
-      return ctx.unauthorized('Invalid credentials');
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { cccd: existingUser.cccd, id: existingUser.id },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Use the authenticated user from the token
+    const existingUser = user;
 
     // Update session status
     qrCodeStore.set(sessionId, {
       ...session,
-      status: 'authenticated',
+      status: 'authenticated',  
       token,
       user: existingUser
     });
@@ -612,6 +606,52 @@ const qrLogin = async (ctx) => {
   }
 };
 
+// Check QR session status (polling endpoint)
+const checkQrStatus = async (ctx) => {
+  try {
+    // Try to get sessionId from body or query
+    const sessionId = ctx.request.body.sessionId || ctx.request.query.sessionId;
+
+    if (!sessionId) {
+      return ctx.badRequest('sessionId is required');
+    }
+
+    // Check session status
+    const session = qrCodeStore.get(sessionId);
+    if (!session) {
+      return ctx.badRequest('Invalid or expired session');
+    }
+
+    if (Date.now() > session.expiresAt) {
+      qrCodeStore.delete(sessionId);
+      return ctx.badRequest('Session expired');
+    }
+
+    if (session.status === 'pending') {
+      return ctx.send({
+        status: 'pending',
+        message: 'Waiting for mobile authentication'
+      });
+    }
+
+    if (session.status === 'authenticated') {
+      // Clean up session
+      qrCodeStore.delete(sessionId);
+
+      return ctx.send({
+        status: 'authenticated',
+        token: session.token,
+        user: session.user
+      });
+    }
+
+    return ctx.badRequest('Invalid session status');
+  } catch (error) {
+    console.error('Check QR status error:', error);
+    return ctx.internalServerError('Failed to check QR status');
+  }
+};
+
 // Clean up expired sessions periodically
 setInterval(() => {
   const now = Date.now();
@@ -640,5 +680,5 @@ const verifyBankNumber = async (ctx) => {
 
 module.exports = {
   login, register, changePassword, getMe, updateUser, searchByCCCD,
-  generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo
+  generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo, checkQrStatus
 };
