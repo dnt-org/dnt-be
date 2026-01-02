@@ -403,7 +403,7 @@ const generateQR = async (ctx) => {
     });
 
     // Generate QR code as base64 image
-    const qrCodeUrl = `${qrData.appUrl}?sessionId=${sessionId}&timestamp=${timestamp}`;
+    const qrCodeUrl = `${qrData.appUrl}/login?sessionId=${sessionId}&timestamp=${timestamp}`;
     const qrCodeImage = await QRCode.toDataURL(qrCodeUrl);
 
     return ctx.send({
