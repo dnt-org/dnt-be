@@ -11,16 +11,40 @@ const { getUserApproveMode } = require('../../../common/services/system-config')
 const { createFileEntry } = require('../../../common/files-utils');
 const { pushNotification } = require('../../../common/notification');
 const { getUserFromToken } = require('../../../common/services/auth-utils');
+const { verifyRecaptcha, isRecaptchaEnabled, getRecaptchaErrorMessage } = require('../../../common/services/recaptcha');
 
 // In-memory storage for QR codes (in production, use Redis or database)
 const qrCodeStore = new Map();
 
 const login = async (ctx) => {
-  const { cccd, password } = ctx.request.body;
+  const { cccd, password, recaptchaToken } = ctx.request.body;
 
   if (!cccd || !password) {
     return ctx.badRequest('cccd and password are required');
   }
+
+  // Verify reCAPTCHA token if enabled
+  if (isRecaptchaEnabled()) {
+    // Get client IP address
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken, clientIp);
+
+    if (!recaptchaResult.success && !recaptchaResult.skipped) {
+      console.log('[Login] reCAPTCHA verification failed:', recaptchaResult.errorCodes);
+      return ctx.badRequest(getRecaptchaErrorMessage(recaptchaResult.errorCodes));
+    }
+
+    // For reCAPTCHA v3, you can also check the score (0.0 - 1.0)
+    // Lower score = more likely to be a bot
+    // if (recaptchaResult.score !== undefined && recaptchaResult.score < 0.5) {
+    //   console.log('[Login] reCAPTCHA score too low:', recaptchaResult.score);
+    //   return ctx.badRequest('reCAPTCHA verification failed - suspicious activity detected');
+    // }
+
+    console.log('[Login] reCAPTCHA verification passed');
+  }
+
   console.log(ctx.request.body);
 
   const existingUser = await strapi.db.query('plugin::users-permissions.user').findOne({
@@ -428,7 +452,7 @@ const generateQRinfo = async (ctx) => {
     // Extract user data from JWT token
     const token = authHeader.split(' ')[1];
     const user = await getUserFromToken(token, strapi);
-    
+
     if (!user) {
       return ctx.unauthorized('Invalid or expired token');
     }
@@ -518,7 +542,7 @@ const verifyQR = async (ctx) => {
     // Extract user data from JWT token
     const token = authHeader.split(' ')[1];
     const user = await getUserFromToken(token, strapi);
-    
+
     if (!user) {
       return ctx.unauthorized('Invalid or expired token');
     }
@@ -544,7 +568,7 @@ const verifyQR = async (ctx) => {
     // Update session status
     qrCodeStore.set(sessionId, {
       ...session,
-      status: 'authenticated',  
+      status: 'authenticated',
       token,
       user: existingUser
     });
