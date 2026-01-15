@@ -36,6 +36,9 @@
         "manual mode"
       ],
       "default": "auto mode"
+    },
+    "banks": {
+      "type": "json"
     }
   }
 }

@@ -1027,6 +1027,7 @@ export interface ApiSystemConfigurationSystemConfiguration
     };
   };
   attributes: {
+    banks: Schema.Attribute.JSON;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
