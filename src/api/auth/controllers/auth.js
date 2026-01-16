@@ -53,11 +53,28 @@ const login = async (ctx) => {
     populate: ["avt.url"],
   });
 
-
-
-
   if (existingUser == null) {
     return ctx.unauthorized('Invalid credentials');
+  }
+
+  // Check if account is locked due to too many failed attempts
+  if (existingUser.account_locked_until && new Date(existingUser.account_locked_until) > new Date()) {
+    const remainingMinutes = Math.ceil((new Date(existingUser.account_locked_until) - new Date()) / 60000);
+    return ctx.forbidden({
+      error: 'ACCOUNT_LOCKED',
+      message: `Account is locked due to too many failed login attempts. Please try again in ${remainingMinutes} minutes or use password recovery.`,
+      requiresRecovery: true
+    });
+  }
+
+  // Check if login failure count has reached threshold (requires recovery)
+  const MAX_LOGIN_FAILURES = 5;
+  if ((existingUser.login_failure_count || 0) >= MAX_LOGIN_FAILURES) {
+    return ctx.forbidden({
+      error: 'RECOVERY_REQUIRED',
+      message: 'Too many failed login attempts. Please use password recovery to reset your password.',
+      requiresRecovery: true
+    });
   }
 
   const validPassword = await verifyPassword(
@@ -66,20 +83,57 @@ const login = async (ctx) => {
   );
 
   if (!validPassword) {
-    return ctx.unauthorized('Invalid credentials');
+    // Increment login failure count
+    const newFailureCount = (existingUser.login_failure_count || 0) + 1;
+    const updateData = { login_failure_count: newFailureCount };
+
+    // Lock account if max failures reached
+    if (newFailureCount >= MAX_LOGIN_FAILURES) {
+      console.log(`[Login] User ${cccd} reached max login failures (${newFailureCount}). Requiring password recovery.`);
+    }
+
+    await strapi.db.query('plugin::users-permissions.user').update({
+      where: { id: existingUser.id },
+      data: updateData,
+    });
+
+    // Return appropriate error based on failure count
+    if (newFailureCount >= MAX_LOGIN_FAILURES) {
+      return ctx.forbidden({
+        error: 'RECOVERY_REQUIRED',
+        message: 'Too many failed login attempts. Please use password recovery to reset your password.',
+        requiresRecovery: true,
+        failureCount: newFailureCount
+      });
+    }
+
+    return ctx.unauthorized({
+      error: 'INVALID_CREDENTIALS',
+      message: 'Invalid credentials',
+      attemptsRemaining: MAX_LOGIN_FAILURES - newFailureCount
+    });
+  }
+
+  // Login successful - reset failure count and unlock account
+  if (existingUser.login_failure_count > 0 || existingUser.account_locked_until) {
+    await strapi.db.query('plugin::users-permissions.user').update({
+      where: { id: existingUser.id },
+      data: {
+        login_failure_count: 0,
+        account_locked_until: null,
+      },
+    });
   }
 
   console.log(existingUser);
-
 
   const token = jwt.sign({ cccd: existingUser.cccd, id: existingUser.id }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 
   return ctx.send({ token, user: existingUser });
-
-
 }
+
 
 const verifyPassword = async (plainTextPassword, hashedPassword) => {
   try {
@@ -106,12 +160,14 @@ const register = async (ctx) => {
     address_on_map,
     avt,// This will be the URL of the image
     signature,
+    recovery_string, // Recovery string for password recovery
+    recovery_character, // Alternative field name from client
 
   } = ctx.request.body;
 
   console.log(ctx.request.body);
   if (!password || !cccd) {
-    return ctx.badRequest('Missing required fields');
+    return ctx.badRequest('Missing required fields: password and cccd are required');
   }
 
   try {
@@ -128,6 +184,13 @@ const register = async (ctx) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Hash recovery string if provided (support both field names)
+    let hashedRecoveryString = null;
+    const recoveryValue = recovery_string || recovery_character;
+    if (recoveryValue) {
+      hashedRecoveryString = await bcrypt.hash(recoveryValue.toLowerCase().trim(), 10);
+    }
 
     // Create a file entry for the avatar
     let avatarFile = await createFileEntry(avt);
@@ -158,6 +221,9 @@ const register = async (ctx) => {
         signature: signatureFile ? signatureFile.id : null,
         confirmed: userApproveMode === 'manual mode' ? false : true,
         role: authenticatedRole.id, // Assign the authenticated role
+        recovery_string: hashedRecoveryString, // Store hashed recovery string
+        login_failure_count: 0,
+        recovery_failure_count: 0,
       },
     });
 
@@ -328,6 +394,19 @@ const updateUser = async (ctx) => {
     delete updateData.password;
     delete updateData.cccd;
     delete updateData.id;
+    delete updateData.login_failure_count;
+    delete updateData.recovery_failure_count;
+    delete updateData.account_locked_until;
+    delete updateData.reset_token;
+    delete updateData.reset_token_expires_at;
+
+    // Handle recovery_string update - hash it before storing
+    if (updateData.recovery_string) {
+      updateData.recovery_string = await bcrypt.hash(
+        updateData.recovery_string.toLowerCase().trim(),
+        10
+      );
+    }
 
     // Handle avatar update if provided
     if (updateData.avt) {
@@ -702,7 +781,74 @@ const verifyBankNumber = async (ctx) => {
   }
 }
 
+/**
+ * Set recovery string for password recovery
+ * Requires current password for security
+ */
+const setRecoveryString = async (ctx) => {
+  try {
+    // Get the token from the Authorization header
+    const token = ctx.request.header.authorization?.split(' ')[1];
+
+    if (!token) {
+      return ctx.unauthorized('No token provided');
+    }
+
+    const { currentPassword, recoveryString } = ctx.request.body;
+
+    if (!currentPassword || !recoveryString) {
+      return ctx.badRequest('currentPassword and recoveryString are required');
+    }
+
+    if (recoveryString.length < 3) {
+      return ctx.badRequest('Recovery string must be at least 3 characters long');
+    }
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find user by CCCD from token
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+      // @ts-ignore
+      where: { cccd: decoded.cccd },
+    });
+
+    if (!user) {
+      return ctx.notFound('User not found');
+    }
+
+    // Verify current password
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword) {
+      return ctx.unauthorized('Current password is incorrect');
+    }
+
+    // Hash and store recovery string
+    const hashedRecoveryString = await bcrypt.hash(
+      recoveryString.toLowerCase().trim(),
+      10
+    );
+
+    await strapi.db.query('plugin::users-permissions.user').update({
+      where: { id: user.id },
+      data: { recovery_string: hashedRecoveryString },
+    });
+
+    return ctx.send({
+      success: true,
+      message: 'Recovery string has been set successfully'
+    });
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
+      return ctx.unauthorized('Invalid token');
+    }
+    console.error('Set recovery string error:', err);
+    return ctx.internalServerError('An error occurred while setting recovery string');
+  }
+}
+
 module.exports = {
   login, register, changePassword, getMe, updateUser, searchByCCCD,
-  generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo, checkQrStatus
+  generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo, checkQrStatus,
+  setRecoveryString
 };

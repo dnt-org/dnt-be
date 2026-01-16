@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-01-15T11:09:07.899Z"
+    "x-generation-date": "2026-01-16T07:45:50.584Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -13038,6 +13038,26 @@
                   }
                 }
               },
+              "recovery_string": {
+                "type": "string"
+              },
+              "login_failure_count": {
+                "type": "integer"
+              },
+              "recovery_failure_count": {
+                "type": "integer"
+              },
+              "account_locked_until": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reset_token": {
+                "type": "string"
+              },
+              "reset_token_expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
               "createdAt": {
                 "type": "string",
                 "format": "date-time"
@@ -23300,6 +23320,26 @@
                     }
                   }
                 }
+              },
+              "recovery_string": {
+                "type": "string"
+              },
+              "login_failure_count": {
+                "type": "integer"
+              },
+              "recovery_failure_count": {
+                "type": "integer"
+              },
+              "account_locked_until": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reset_token": {
+                "type": "string"
+              },
+              "reset_token_expires_at": {
+                "type": "string",
+                "format": "date-time"
               },
               "createdAt": {
                 "type": "string",

@@ -117,6 +117,31 @@
       ],
       "type": "media",
       "multiple": false
+    },
+    "recovery_string": {
+      "type": "string",
+      "private": true,
+      "searchable": false
+    },
+    "login_failure_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "recovery_failure_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "account_locked_until": {
+      "type": "datetime"
+    },
+    "reset_token": {
+      "type": "string",
+      "private": true,
+      "searchable": false
+    },
+    "reset_token_expires_at": {
+      "type": "datetime",
+      "private": true
     }
   }
 }
