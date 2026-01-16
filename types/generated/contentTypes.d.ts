@@ -1769,6 +1769,7 @@ export interface PluginUsersPermissionsUser
     draftAndPublish: false;
   };
   attributes: {
+    account_locked_until: Schema.Attribute.DateTime;
     address_no: Schema.Attribute.String;
     address_on_map: Schema.Attribute.String;
     avt: Schema.Attribute.Media<'images'>;
@@ -1799,6 +1800,8 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
+    login_failure_count: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
     mobile_number: Schema.Attribute.String;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
@@ -1807,7 +1810,13 @@ export interface PluginUsersPermissionsUser
       }>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    recovery_failure_count: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    recovery_string: Schema.Attribute.String & Schema.Attribute.Private;
     reference_id: Schema.Attribute.String;
+    reset_token: Schema.Attribute.String & Schema.Attribute.Private;
+    reset_token_expires_at: Schema.Attribute.DateTime &
+      Schema.Attribute.Private;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
     role: Schema.Attribute.Relation<
       'manyToOne',
