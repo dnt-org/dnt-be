@@ -450,35 +450,34 @@ export interface ApiAuditTrailAuditTrail extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiDocumentDocument extends Struct.CollectionTypeSchema {
-  collectionName: 'documents';
+export interface ApiCollateralCollateral extends Struct.CollectionTypeSchema {
+  collectionName: 'collaterals';
   info: {
-    description: 'Stores documents to be signed and their metadata';
-    displayName: 'Document';
-    pluralName: 'documents';
-    singularName: 'document';
+    displayName: 'collateral';
+    pluralName: 'collaterals';
+    singularName: 'collateral';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
+    active: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
+    code: Schema.Attribute.String & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    docStatus: Schema.Attribute.String & Schema.Attribute.DefaultTo<'draft'>;
+    file: Schema.Attribute.Media<'images' | 'files', true> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::document.document'
+      'api::collateral.collateral'
     > &
       Schema.Attribute.Private;
-    metadata: Schema.Attribute.JSON;
-    pdfHash: Schema.Attribute.String;
-    pdfUrl: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    signType: Schema.Attribute.Enumeration<['CA', 'ESIGN']> &
-      Schema.Attribute.DefaultTo<'ESIGN'>;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1843,7 +1842,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::additional-transaction.additional-transaction': ApiAdditionalTransactionAdditionalTransaction;
       'api::audit-trail.audit-trail': ApiAuditTrailAuditTrail;
-      'api::document.document': ApiDocumentDocument;
+      'api::collateral.collateral': ApiCollateralCollateral;
       'api::event.event': ApiEventEvent;
       'api::freelancer.freelancer': ApiFreelancerFreelancer;
       'api::global.global': ApiGlobalGlobal;

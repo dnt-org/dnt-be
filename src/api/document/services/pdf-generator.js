@@ -3,8 +3,38 @@
 const { PDFDocument, rgb } = require('pdf-lib');
 const fs = require('fs');
 const path = require('path');
+const puppeteer = require('puppeteer');
 
 module.exports = {
+  /**
+   * Generate PDF from HTML string using Puppeteer
+   * @param {string} html - HTML content
+   * @returns {Promise<Buffer>} PDF buffer
+   */
+  async generateFromHtml(html) {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    try {
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '20px',
+          bottom: '20px',
+          left: '20px',
+          right: '20px'
+        }
+      });
+      return pdfBuffer;
+    } finally {
+      await browser.close();
+    }
+  },
+
   /**
    * Generate a PDF using a system template if available.
    * If `templatePath` is provided (or `PDF_TEMPLATE_PATH` env is set), load it and overlay title text.

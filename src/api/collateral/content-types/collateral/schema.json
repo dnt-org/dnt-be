@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "collaterals",
+  "info": {
+    "singularName": "collateral",
+    "pluralName": "collaterals",
+    "displayName": "collateral"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "file": {
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
+    }
+  }
+}
