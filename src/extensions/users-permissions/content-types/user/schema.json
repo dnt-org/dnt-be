@@ -134,6 +134,9 @@
     "account_locked_until": {
       "type": "datetime"
     },
+    "temp_blocked_until": {
+      "type": "datetime"
+    },
     "reset_token": {
       "type": "string",
       "private": true,
@@ -142,6 +145,16 @@
     "reset_token_expires_at": {
       "type": "datetime",
       "private": true
+    },
+    "otp": {
+      "type": "string",
+      "default": "123456",
+      "private": true,
+      "searchable": false
+    },
+    "is_in_final_chance": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

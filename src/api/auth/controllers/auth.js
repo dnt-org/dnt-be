@@ -25,9 +25,7 @@ const login = async (ctx) => {
 
   // Verify reCAPTCHA token if enabled
   if (isRecaptchaEnabled()) {
-    // Get client IP address
     const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
-
     const recaptchaResult = await verifyRecaptcha(recaptchaToken, clientIp);
 
     if (!recaptchaResult.success && !recaptchaResult.skipped) {
@@ -35,20 +33,12 @@ const login = async (ctx) => {
       return ctx.badRequest(getRecaptchaErrorMessage(recaptchaResult.errorCodes));
     }
 
-    // For reCAPTCHA v3, you can also check the score (0.0 - 1.0)
-    // Lower score = more likely to be a bot
-    // if (recaptchaResult.score !== undefined && recaptchaResult.score < 0.5) {
-    //   console.log('[Login] reCAPTCHA score too low:', recaptchaResult.score);
-    //   return ctx.badRequest('reCAPTCHA verification failed - suspicious activity detected');
-    // }
-
     console.log('[Login] reCAPTCHA verification passed');
   }
 
   console.log(ctx.request.body);
 
   const existingUser = await strapi.db.query('plugin::users-permissions.user').findOne({
-    // @ts-ignore
     where: { cccd: cccd },
     populate: ["avt.url"],
   });
@@ -57,54 +47,105 @@ const login = async (ctx) => {
     return ctx.unauthorized('Invalid credentials');
   }
 
-  // Check if account is locked due to too many failed attempts
-  if (existingUser.account_locked_until && new Date(existingUser.account_locked_until) > new Date()) {
-    const remainingMinutes = Math.ceil((new Date(existingUser.account_locked_until) - new Date()) / 60000);
-    return ctx.forbidden({
-      error: 'ACCOUNT_LOCKED',
-      message: `Account is locked due to too many failed login attempts. Please try again in ${remainingMinutes} minutes or use password recovery.`,
-      requiresRecovery: true
-    });
-  }
-
-  // Check if login failure count has reached threshold (requires recovery)
   const MAX_LOGIN_FAILURES = 5;
-  if ((existingUser.login_failure_count || 0) >= MAX_LOGIN_FAILURES) {
-    return ctx.forbidden({
-      error: 'RECOVERY_REQUIRED',
-      message: 'Too many failed login attempts. Please use password recovery to reset your password.',
-      requiresRecovery: true
-    });
+  const TEMP_BLOCK_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+
+  // Check if account is permanently BLOCKED
+  if (existingUser.blocked) {
+    ctx.response.status = 403;
+    return ctx.body = {
+      error: 'PERMANENTLY_BLOCKED',
+      message: 'Account is permanently blocked. Please contact support.',
+      isBlocked: true,
+      requiresSupport: true
+    };
   }
 
-  const validPassword = await verifyPassword(
-    password,
-    existingUser.password
-  );
+  // Check if account is TEMP_BLOCKED (during 10 min block, cannot do anything)
+  const isTempBlocked = existingUser.temp_blocked_until && new Date(existingUser.temp_blocked_until) > new Date();
+
+  if (isTempBlocked) {
+    const remainingMinutes = Math.ceil((new Date(existingUser.temp_blocked_until) - new Date()) / 60000);
+    ctx.response.status = 403;
+    return ctx.body = {
+      error: 'TEMP_BLOCKED',
+      message: `Account is temporarily blocked for ${remainingMinutes} more minutes. Cannot login or recovery during this time.`,
+      remainingMinutes,
+      tempBlockedUntil: existingUser.temp_blocked_until
+    };
+  }
+
+  // Check if user is in final chance mode - any wrong password = BLOCKED
+  if (existingUser.is_in_final_chance) {
+    const validPassword = await verifyPassword(password, existingUser.password);
+
+    if (!validPassword) {
+      // BLOCK immediately
+      await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: existingUser.id },
+        data: {
+          blocked: true,
+          is_in_final_chance: false,
+        },
+      });
+
+      console.log(`[Login] User ${cccd} PERMANENTLY BLOCKED - failed password in final chance mode.`);
+
+      ctx.response.status = 403;
+      return ctx.body = {
+        error: 'PERMANENTLY_BLOCKED',
+        message: 'Wrong password in final chance. Account is now permanently blocked. Please contact support.',
+        isBlocked: true,
+        requiresSupport: true
+      };
+    }
+
+    // Password correct in final chance - BUT still require recovery to unlock
+    // ải 1: Password passed. Now force ải 2: Recovery
+    console.log(`[Login] User ${cccd} passed password check in final chance - forcing recovery.`);
+
+    ctx.response.status = 403;
+    return ctx.body = {
+      error: 'RECOVERY_REQUIRED',
+      reason: 'FINAL_CHANCE_SECURITY_CHECK',
+      message: 'Password correct. Please verify recovery string to fully unlock your account.',
+      requiresRecovery: true
+    };
+  }
+
+  // Check if login failure count reached threshold - must recovery
+  if ((existingUser.login_failure_count || 0) >= MAX_LOGIN_FAILURES) {
+    ctx.response.status = 403;
+    return ctx.body = {
+      error: 'RECOVERY_REQUIRED',
+      reason: 'TOO_MANY_LOGIN_FAILURES',
+      message: 'Too many failed login attempts. Please use recovery to unlock your account.',
+      requiresRecovery: true
+    };
+  }
+
+  // Normal login flow
+  const validPassword = await verifyPassword(password, existingUser.password);
 
   if (!validPassword) {
-    // Increment login failure count
     const newFailureCount = (existingUser.login_failure_count || 0) + 1;
-    const updateData = { login_failure_count: newFailureCount };
-
-    // Lock account if max failures reached
-    if (newFailureCount >= MAX_LOGIN_FAILURES) {
-      console.log(`[Login] User ${cccd} reached max login failures (${newFailureCount}). Requiring password recovery.`);
-    }
 
     await strapi.db.query('plugin::users-permissions.user').update({
       where: { id: existingUser.id },
-      data: updateData,
+      data: { login_failure_count: newFailureCount },
     });
 
-    // Return appropriate error based on failure count
+    // If max failures reached, require recovery
     if (newFailureCount >= MAX_LOGIN_FAILURES) {
-      return ctx.forbidden({
+      console.log(`[Login] User ${cccd} must recovery after ${newFailureCount} failed attempts.`);
+
+      ctx.response.status = 403;
+      return ctx.body = {
         error: 'RECOVERY_REQUIRED',
-        message: 'Too many failed login attempts. Please use password recovery to reset your password.',
-        requiresRecovery: true,
-        failureCount: newFailureCount
-      });
+        reason: 'TOO_MANY_LOGIN_FAILURES',
+        message: 'Too many failed login attempts. Please use recovery to unlock your account.',
+        requiresRecovery: true
+      };
     }
 
     return ctx.unauthorized({
@@ -114,16 +155,19 @@ const login = async (ctx) => {
     });
   }
 
-  // Login successful - reset failure count and unlock account
-  if (existingUser.login_failure_count > 0 || existingUser.account_locked_until) {
-    await strapi.db.query('plugin::users-permissions.user').update({
-      where: { id: existingUser.id },
-      data: {
-        login_failure_count: 0,
-        account_locked_until: null,
-      },
-    });
-  }
+  // Login successful - reset failure counts and security flags
+  await strapi.db.query('plugin::users-permissions.user').update({
+    where: { id: existingUser.id },
+    data: {
+      login_failure_count: 0,
+      recovery_failure_count: 0,
+      is_in_final_chance: false,
+      temp_blocked_until: null,
+      account_locked_until: null,
+      reset_token: null,
+      reset_token_expires_at: null,
+    },
+  });
 
   console.log(existingUser);
 
@@ -224,6 +268,7 @@ const register = async (ctx) => {
         recovery_string: hashedRecoveryString, // Store hashed recovery string
         login_failure_count: 0,
         recovery_failure_count: 0,
+        otp: "123456", // Default OTP for new users
       },
     });
 

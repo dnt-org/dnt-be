@@ -133,6 +133,16 @@ module.exports = {
     },
     {
       method: 'POST',
+      path: '/v1/auth/recover/verify-otp',
+      handler: 'recovery.verifyOtp',
+      config: {
+        auth: false,
+        policies: [],
+        description: 'Verify OTP after recovery string verification',
+      },
+    },
+    {
+      method: 'POST',
       path: '/auth/set-recovery-string',
       handler: 'auth.setRecoveryString',
       config: {
