@@ -12,6 +12,13 @@ const RECAPTCHA_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
  * @returns {boolean}
  */
 const isRecaptchaEnabled = () => {
+    console.log('[Debug] BYPASS_VERIFICATIONS:', process.env.BYPASS_VERIFICATIONS);
+    console.log('[Debug] RECAPTCHA_ENABLED:', process.env.RECAPTCHA_ENABLED);
+
+    const bypass = process.env.BYPASS_VERIFICATIONS ? process.env.BYPASS_VERIFICATIONS.trim() : 'false';
+    if (bypass === 'true') {
+        return false;
+    }
     return process.env.RECAPTCHA_ENABLED === 'true';
 };
 

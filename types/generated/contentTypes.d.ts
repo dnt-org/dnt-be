@@ -1793,6 +1793,8 @@ export interface PluginUsersPermissionsUser
     >;
     full_name: Schema.Attribute.String;
     is_ctv: Schema.Attribute.Boolean;
+    is_in_final_chance: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1802,6 +1804,9 @@ export interface PluginUsersPermissionsUser
     login_failure_count: Schema.Attribute.Integer &
       Schema.Attribute.DefaultTo<0>;
     mobile_number: Schema.Attribute.String;
+    otp: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.DefaultTo<'123456'>;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
@@ -1822,6 +1827,7 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.role'
     >;
     signature: Schema.Attribute.Media<'images' | 'files'>;
+    temp_blocked_until: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

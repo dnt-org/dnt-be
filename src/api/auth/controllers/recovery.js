@@ -7,9 +7,9 @@ const crypto = require('crypto');
 
 // Constants for security
 const MAX_LOGIN_FAILURES = 5;
-const MAX_RECOVERY_FAILURES = 3;
+const MAX_RECOVERY_FAILURES = 5;
 const RESET_TOKEN_EXPIRY_MINUTES = 10;
-const ACCOUNT_LOCK_DURATION_MINUTES = 30;
+const TEMP_BLOCK_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
 /**
  * Generate a secure reset token
@@ -117,23 +117,39 @@ const verifyRecovery = async (ctx) => {
             });
         }
 
-        // Check if account is locked
-        if (user.account_locked_until && new Date(user.account_locked_until) > new Date()) {
-            const remainingMinutes = Math.ceil((new Date(user.account_locked_until) - new Date()) / 60000);
+        // Check if account is permanently BLOCKED
+        if (user.blocked) {
+            ctx.response.status = 403;
+            return ctx.body = {
+                verificationResult: 'FAIL',
+                error: 'PERMANENTLY_BLOCKED',
+                message: 'Account is permanently blocked. Please contact support.',
+                isBlocked: true,
+                requiresSupport: true
+            };
+        }
+
+        // Check if account is TEMP_BLOCKED (cannot recovery during this time)
+        const isTempBlocked = user.temp_blocked_until && new Date(user.temp_blocked_until) > new Date();
+        if (isTempBlocked) {
+            const remainingMinutes = Math.ceil((new Date(user.temp_blocked_until) - new Date()) / 60000);
 
             await createAuditLog(strapi, {
                 action: 'RECOVERY_VERIFY_BLOCKED',
                 userId: user.id,
-                details: { reason: 'ACCOUNT_LOCKED', remainingMinutes },
+                details: { reason: 'TEMP_BLOCKED', remainingMinutes },
                 ipAddress: clientIp,
                 userAgent,
             });
 
-            return ctx.badRequest({
+            ctx.response.status = 403;
+            return ctx.body = {
                 verificationResult: 'FAIL',
-                error: 'ACCOUNT_TEMPORARILY_LOCKED',
-                message: `Account is locked. Please try again in ${remainingMinutes} minutes.`
-            });
+                error: 'TEMP_BLOCKED',
+                message: `Account is temporarily blocked for ${remainingMinutes} more minutes. Cannot recovery during this time.`,
+                remainingMinutes,
+                tempBlockedUntil: user.temp_blocked_until
+            };
         }
 
         // Check if user has a recovery string set
@@ -156,14 +172,45 @@ const verifyRecovery = async (ctx) => {
         const isValidRecovery = await verifyRecoveryString(recoveryString, user.recovery_string);
 
         if (!isValidRecovery) {
-            // Increment recovery failure count
+            // Check if user is in final chance mode - any wrong = BLOCKED immediately
+            if (user.is_in_final_chance) {
+                await strapi.db.query('plugin::users-permissions.user').update({
+                    where: { id: user.id },
+                    data: {
+                        blocked: true,
+                        is_in_final_chance: false,
+                    },
+                });
+
+                console.log(`[Recovery] User ${bankAccountId} PERMANENTLY BLOCKED - failed recovery in final chance mode.`);
+
+                await createAuditLog(strapi, {
+                    action: 'RECOVERY_VERIFY_FAILED',
+                    userId: user.id,
+                    details: { reason: 'FINAL_CHANCE_FAILED', blocked: true },
+                    ipAddress: clientIp,
+                    userAgent,
+                });
+
+                ctx.response.status = 403;
+                return ctx.body = {
+                    verificationResult: 'FAIL',
+                    error: 'PERMANENTLY_BLOCKED',
+                    message: 'Wrong recovery string in final chance. Account is now permanently blocked. Please contact support.',
+                    isBlocked: true,
+                    requiresSupport: true
+                };
+            }
+
+            // Normal mode: increment recovery failure count
             const newFailureCount = (user.recovery_failure_count || 0) + 1;
             const updateData = { recovery_failure_count: newFailureCount };
 
-            // Lock account if max failures reached
+            // TEMP_BLOCK for 10 minutes if max failures reached, set final chance flag
             if (newFailureCount >= MAX_RECOVERY_FAILURES) {
-                updateData.account_locked_until = new Date(Date.now() + ACCOUNT_LOCK_DURATION_MINUTES * 60 * 1000);
-                updateData.recovery_failure_count = 0; // Reset counter after lock
+                updateData.temp_blocked_until = new Date(Date.now() + TEMP_BLOCK_DURATION_MS);
+                updateData.is_in_final_chance = true;
+                updateData.recovery_failure_count = 0; // Reset counter
             }
 
             await strapi.db.query('plugin::users-permissions.user').update({
@@ -177,18 +224,20 @@ const verifyRecovery = async (ctx) => {
                 details: {
                     reason: 'INVALID_RECOVERY_STRING',
                     failureCount: newFailureCount,
-                    accountLocked: newFailureCount >= MAX_RECOVERY_FAILURES
+                    tempBlocked: newFailureCount >= MAX_RECOVERY_FAILURES
                 },
                 ipAddress: clientIp,
                 userAgent,
             });
 
             if (newFailureCount >= MAX_RECOVERY_FAILURES) {
-                return ctx.badRequest({
+                ctx.response.status = 403;
+                return ctx.body = {
                     verificationResult: 'FAIL',
-                    error: 'ACCOUNT_TEMPORARILY_LOCKED',
-                    message: `Too many failed attempts. Account locked for ${ACCOUNT_LOCK_DURATION_MINUTES} minutes.`
-                });
+                    error: 'TEMP_BLOCKED',
+                    message: 'Too many failed recovery attempts. Account is temporarily blocked for 10 minutes.',
+                    remainingMinutes: 10
+                };
             }
 
             return ctx.badRequest({
@@ -202,7 +251,7 @@ const verifyRecovery = async (ctx) => {
         const resetToken = generateResetToken();
         const resetTokenExpiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_MINUTES * 60 * 1000);
 
-        // Store reset token and reset failure counters
+        // Store reset token and reset failure counters, clear temp block
         await strapi.db.query('plugin::users-permissions.user').update({
             where: { id: user.id },
             data: {
@@ -210,6 +259,7 @@ const verifyRecovery = async (ctx) => {
                 reset_token_expires_at: resetTokenExpiresAt,
                 recovery_failure_count: 0,
                 login_failure_count: 0,
+                temp_blocked_until: null, // Clear temp block on successful recovery
             },
         });
 
@@ -396,8 +446,156 @@ const setRecoveryString = async (strapi, userId, recoveryString) => {
     return true;
 };
 
+/**
+ * POST /api/v1/auth/recover/verify-otp
+ * Verify OTP after successful recovery string verification
+ * Returns a new token that allows password reset
+ */
+const verifyOtp = async (ctx) => {
+    const { resetToken, otp } = ctx.request.body;
+
+    // Validate required fields
+    if (!resetToken || !otp) {
+        return ctx.badRequest('resetToken and otp are required');
+    }
+
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+    const userAgent = ctx.request.header['user-agent'] || 'unknown';
+
+    try {
+        // Find user by reset token
+        const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+            where: { reset_token: resetToken },
+        });
+
+        if (!user) {
+            await createAuditLog(strapi, {
+                action: 'OTP_VERIFY_FAILED',
+                userId: null,
+                details: { reason: 'INVALID_RESET_TOKEN' },
+                ipAddress: clientIp,
+                userAgent,
+            });
+
+            return ctx.badRequest({
+                verificationResult: 'FAIL',
+                error: 'INVALID_RESET_TOKEN',
+                message: 'Reset token is invalid or has already been used.'
+            });
+        }
+
+        // Check if token is expired
+        if (!user.reset_token_expires_at || new Date(user.reset_token_expires_at) < new Date()) {
+            // Clear expired token
+            await strapi.db.query('plugin::users-permissions.user').update({
+                where: { id: user.id },
+                data: {
+                    reset_token: null,
+                    reset_token_expires_at: null,
+                },
+            });
+
+            await createAuditLog(strapi, {
+                action: 'OTP_VERIFY_FAILED',
+                userId: user.id,
+                details: { reason: 'RESET_TOKEN_EXPIRED' },
+                ipAddress: clientIp,
+                userAgent,
+            });
+
+            return ctx.badRequest({
+                verificationResult: 'FAIL',
+                error: 'RESET_TOKEN_EXPIRED',
+                message: 'Reset token has expired. Please request a new one.'
+            });
+        }
+
+        // Verify OTP (currently hardcoded as "123456")
+        const storedOtp = user.otp || '123456';
+        if (otp !== storedOtp) {
+            // Check if user is in final chance mode - any wrong = BLOCKED immediately
+            if (user.is_in_final_chance) {
+                await strapi.db.query('plugin::users-permissions.user').update({
+                    where: { id: user.id },
+                    data: {
+                        blocked: true,
+                        is_in_final_chance: false,
+                        reset_token: null,
+                        reset_token_expires_at: null,
+                    },
+                });
+
+                console.log(`[OTP] User ${user.id} PERMANENTLY BLOCKED - failed OTP in final chance mode.`);
+
+                await createAuditLog(strapi, {
+                    action: 'OTP_VERIFY_FAILED',
+                    userId: user.id,
+                    details: { reason: 'FINAL_CHANCE_FAILED', blocked: true },
+                    ipAddress: clientIp,
+                    userAgent,
+                });
+
+                ctx.response.status = 403;
+                return ctx.body = {
+                    verificationResult: 'FAIL',
+                    error: 'PERMANENTLY_BLOCKED',
+                    message: 'Wrong OTP in final chance. Account is now permanently blocked. Please contact support.',
+                    isBlocked: true,
+                    requiresSupport: true
+                };
+            }
+
+            await createAuditLog(strapi, {
+                action: 'OTP_VERIFY_FAILED',
+                userId: user.id,
+                details: { reason: 'INVALID_OTP' },
+                ipAddress: clientIp,
+                userAgent,
+            });
+
+            return ctx.badRequest({
+                verificationResult: 'FAIL',
+                error: 'INVALID_OTP',
+                message: 'Invalid OTP. Please try again.'
+            });
+        }
+
+        // OTP verified successfully - generate a new password reset token
+        const passwordResetToken = generateResetToken();
+        const passwordResetTokenExpiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_MINUTES * 60 * 1000);
+
+        // Update with new token for password reset
+        await strapi.db.query('plugin::users-permissions.user').update({
+            where: { id: user.id },
+            data: {
+                reset_token: passwordResetToken,
+                reset_token_expires_at: passwordResetTokenExpiresAt,
+            },
+        });
+
+        await createAuditLog(strapi, {
+            action: 'OTP_VERIFY_SUCCESS',
+            userId: user.id,
+            details: { passwordResetTokenExpiry: passwordResetTokenExpiresAt.toISOString() },
+            ipAddress: clientIp,
+            userAgent,
+        });
+
+        return ctx.send({
+            verificationResult: 'PASS',
+            resetToken: passwordResetToken,
+            message: 'OTP verified successfully. You can now reset your password.'
+        });
+
+    } catch (error) {
+        console.error('[Recovery] Verify OTP error:', error);
+        return ctx.internalServerError('An error occurred during OTP verification');
+    }
+};
+
 module.exports = {
     verifyRecovery,
+    verifyOtp,
     resetPassword,
     hashRecoveryString,
     setRecoveryString,
