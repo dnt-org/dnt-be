@@ -251,7 +251,12 @@ const verifyRecovery = async (ctx) => {
         const resetToken = generateResetToken();
         const resetTokenExpiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_MINUTES * 60 * 1000);
 
+        // Check if user was previously TEMP_BLOCKED (is_in_final_chance = true)
+        // If so, require OTP verification before allowing password reset
+        const requiresOtp = user.is_in_final_chance === true;
+
         // Store reset token and reset failure counters, clear temp block
+        // Note: Do NOT clear is_in_final_chance here - it should only be cleared after full verification
         await strapi.db.query('plugin::users-permissions.user').update({
             where: { id: user.id },
             data: {
@@ -260,20 +265,30 @@ const verifyRecovery = async (ctx) => {
                 recovery_failure_count: 0,
                 login_failure_count: 0,
                 temp_blocked_until: null, // Clear temp block on successful recovery
+                // If NOT in final chance (no OTP needed), clear all security flags now
+                ...(requiresOtp ? {} : { is_in_final_chance: false }),
             },
         });
 
         await createAuditLog(strapi, {
             action: 'RECOVERY_VERIFY_SUCCESS',
             userId: user.id,
-            details: { resetTokenExpiry: resetTokenExpiresAt.toISOString() },
+            details: {
+                resetTokenExpiry: resetTokenExpiresAt.toISOString(),
+                requiresOtp: requiresOtp,
+                wasInFinalChance: user.is_in_final_chance
+            },
             ipAddress: clientIp,
             userAgent,
         });
 
         return ctx.send({
             verificationResult: 'PASS',
-            resetToken: resetToken
+            resetToken: resetToken,
+            requiresOtp: requiresOtp,
+            message: requiresOtp
+                ? 'Recovery verified. Please verify OTP to complete the process.'
+                : 'Recovery verified. You can now reset your password.'
         });
 
     } catch (error) {
@@ -564,12 +579,14 @@ const verifyOtp = async (ctx) => {
         const passwordResetToken = generateResetToken();
         const passwordResetTokenExpiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_MINUTES * 60 * 1000);
 
-        // Update with new token for password reset
+        // Update with new token for password reset and clear final chance flag
+        // OTP verification completes the security check, so user exits "final chance" state
         await strapi.db.query('plugin::users-permissions.user').update({
             where: { id: user.id },
             data: {
                 reset_token: passwordResetToken,
                 reset_token_expires_at: passwordResetTokenExpiresAt,
+                is_in_final_chance: false, // Clear final chance flag after successful OTP
             },
         });
 
