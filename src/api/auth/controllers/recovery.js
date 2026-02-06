@@ -370,10 +370,11 @@ const resetPassword = async (ctx) => {
         // Check if new password is same as current password
         const isSamePassword = await bcrypt.compare(newPassword, user.password);
         if (isSamePassword) {
-            return ctx.badRequest({
+            ctx.response.status = 409;
+            return ctx.body = {
                 error: 'PASSWORD_SAME_AS_PREVIOUS',
                 message: 'New password must be different from the previous password.'
-            });
+            };
         }
 
         // Hash new password
