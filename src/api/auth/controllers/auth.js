@@ -816,9 +816,26 @@ const verifyBankNumber = async (ctx) => {
     if (!bankNumber || !bankName || !accountName) {
       return ctx.badRequest('bankNumber, bankName, and accountName are required');
     }
+
+    const existing = await strapi.db
+      .query('plugin::users-permissions.user')
+      .findOne({
+        where: { bank_number: bankNumber },
+        select: ['id'],
+      });
+
+    if (existing) {
+      return ctx.send({
+        success: false,
+        exists: true,
+        message: 'Bank number already exists',
+      });
+    }
+
     return ctx.send({
       success: true,
-      message: 'Bank number is valid'
+      exists: false,
+      message: 'Bank number is available',
     });
   } catch (error) {
     console.error('Bank number verification error:', error);

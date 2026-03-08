@@ -484,6 +484,48 @@ export interface ApiCollateralCollateral extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiContentVariableContentVariable
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'content_variables';
+  info: {
+    displayName: 'content variable';
+    pluralName: 'content-variables';
+    singularName: 'content-variable';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    content: Schema.Attribute.JSON &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::content-variable.content-variable'
+    >;
+    name: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
@@ -572,7 +614,6 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    defaultSeo: Schema.Attribute.Component<'shared.seo', false>;
     favicon: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1849,6 +1890,7 @@ declare module '@strapi/strapi' {
       'api::additional-transaction.additional-transaction': ApiAdditionalTransactionAdditionalTransaction;
       'api::audit-trail.audit-trail': ApiAuditTrailAuditTrail;
       'api::collateral.collateral': ApiCollateralCollateral;
+      'api::content-variable.content-variable': ApiContentVariableContentVariable;
       'api::event.event': ApiEventEvent;
       'api::freelancer.freelancer': ApiFreelancerFreelancer;
       'api::global.global': ApiGlobalGlobal;
