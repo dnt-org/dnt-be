@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "content_variables",
+  "info": {
+    "singularName": "content-variable",
+    "pluralName": "content-variables",
+    "displayName": "content variable"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "name": {
+      "type": "text",
+      "required": true,
+      "unique": true
+    },
+    "content": {
+      "type": "json",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
