@@ -7,9 +7,9 @@ module.exports = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:'],
-          'img-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io', 'jromefuxyhpxffrdivzx.supabase.co'],
-          'media-src': ["'self'", 'data:', 'blob:', 'res.cloudinary.com', 'strapi.io', 'jromefuxyhpxffrdivzx.supabase.co'],
+          'connect-src': ["'self'", 'https:', '*'],
+          'img-src': ["'self'", 'data:', 'blob:', '*'],
+          'media-src': ["'self'", 'data:', 'blob:', '*'],
           upgradeInsecureRequests: null,
         },
       },
