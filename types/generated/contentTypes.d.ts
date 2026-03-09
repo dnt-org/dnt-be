@@ -1824,10 +1824,7 @@ export interface PluginUsersPermissionsUser
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    email: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        minLength: 6;
-      }>;
+    email: Schema.Attribute.Email & Schema.Attribute.DefaultTo<''>;
     favorite_wallets: Schema.Attribute.Relation<
       'oneToMany',
       'api::wallet.wallet'
@@ -1872,7 +1869,7 @@ export interface PluginUsersPermissionsUser
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    username: Schema.Attribute.String;
+    username: Schema.Attribute.String & Schema.Attribute.DefaultTo<''>;
     wallet: Schema.Attribute.Relation<'oneToOne', 'api::wallet.wallet'>;
   };
 }

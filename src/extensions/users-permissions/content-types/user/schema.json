@@ -14,14 +14,13 @@
   "attributes": {
     "username": {
       "type": "string",
-      "configurable": false,
-      "required": false
+      "required": false,
+      "default": ""
     },
     "email": {
-      "type": "string",
-      "minLength": 6,
-      "configurable": false,
-      "required": false
+      "type": "email",
+      "required": false,
+      "default": ""
     },
     "provider": {
       "type": "string",
