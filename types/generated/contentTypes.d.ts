@@ -453,7 +453,8 @@ export interface ApiAuditTrailAuditTrail extends Struct.CollectionTypeSchema {
 export interface ApiCollateralCollateral extends Struct.CollectionTypeSchema {
   collectionName: 'collaterals';
   info: {
-    displayName: 'collateral';
+    description: '';
+    displayName: 'Collateral';
     pluralName: 'collaterals';
     singularName: 'collateral';
   };
