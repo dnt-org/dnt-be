@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: '18' # Adjust to match your project's node version
 
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Install dependencies
         run: npm ci
 
@@ -28,7 +32,7 @@ jobs:
         run: |
           # Package all necessary files for production
           # Excludes unneeded files like the raw src, tests, and node_modules
-          tar -czf deploy.tar.gz package.json package-lock.json build config database public .strapi-updater.json || true
+          tar -czf deploy.tar.gz package.json package-lock.json build config database public .strapi-updater.json .env || true
 
       - name: Copy artifact to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -64,7 +68,7 @@ jobs:
             # Check if PM2 process exists, restart if it does, start if it doesn't
             pm2 describe dnt-be > /dev/null
             if [ $? -eq 0 ]; then
-              pm2 restart dnt-be
+              pm2 restart dnt-be --update-env
             else
               pm2 start npm --name "dnt-be" -- run start
             fi
