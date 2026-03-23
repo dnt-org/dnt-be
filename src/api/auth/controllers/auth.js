@@ -17,7 +17,7 @@ const { verifyRecaptcha, isRecaptchaEnabled, getRecaptchaErrorMessage } = requir
 const qrCodeStore = new Map();
 
 const login = async (ctx) => {
-  const { cccd, password, recaptchaToken } = ctx.request.body;
+  const { cccd, password, recaptchaToken, device_name, location, login_type, otp } = ctx.request.body;
 
   if (!cccd || !password) {
     return ctx.badRequest('cccd and password are required');
@@ -170,6 +170,87 @@ const login = async (ctx) => {
   });
 
   console.log(existingUser);
+
+  // Log user session/device
+  let requiresOTP = false;
+  try {
+    const devName = device_name || 'Unknown Device';
+    const loc = location || 'Unknown Location';
+
+    // Check if user has ANY device already (for is_familiar calculation)
+    const anyDevice = await strapi.db.connection('user_sessions')
+      .where({ user_id: existingUser.id })
+      .first();
+
+    // Check if this SPECIFIC device already exists
+    const currentDevice = await strapi.db.connection('user_sessions')
+      .where({
+        user_id: existingUser.id,
+        device_name: devName,
+        location: loc
+      })
+      .first();
+
+    if (currentDevice) {
+      if (!currentDevice.is_familiar) {
+        requiresOTP = true;
+      }
+      // Update existing record
+      await strapi.db.connection('user_sessions')
+        .where({ id: currentDevice.id })
+        .update({
+          login_type: login_type || 'password',
+          status: 'login', // Cập nhật lại trạng thái thành login
+          last_login_at: new Date(),
+          updated_at: new Date()
+        });
+    } else {
+      if (anyDevice) {
+        requiresOTP = true;
+      }
+      // Create new record
+      await strapi.db.connection('user_sessions').insert({
+        user_id: existingUser.id,
+        device_name: devName,
+        location: loc,
+        login_type: login_type || 'password',
+        is_familiar: !anyDevice, // true nếu chưa có thiết bị nào
+        status: 'login',
+        last_login_at: new Date(),
+        created_at: new Date(),
+        updated_at: new Date()
+      });
+    }
+  } catch (err) {
+    console.error('[Login] Failed to record user session:', err);
+  }
+
+  if (requiresOTP) {
+    if (otp && existingUser.otp === otp) {
+      // OTP is correct, mark the device as familiar and proceed
+      try {
+        await strapi.db.connection('user_sessions')
+          .where({
+            user_id: existingUser.id,
+            device_name: device_name || 'Unknown Device',
+            location: location || 'Unknown Location'
+          })
+          .update({
+            is_familiar: true
+          });
+      } catch (err) {
+        console.error('[Login] Failed to update device as familiar after OTP:', err);
+      }
+    } else {
+      ctx.response.status = 403;
+      return ctx.body = {
+        error: 'OTP_REQUIRED',
+        reason: 'UNFAMILIAR_DEVICE',
+        message: otp ? 'Mã OTP không chính xác' : 'Unfamiliar device detected. Please verify OTP.',
+        requiresOTP: true
+      };
+    }
+  }
 
   const token = jwt.sign({ cccd: existingUser.cccd, id: existingUser.id }, process.env.JWT_SECRET, {
     expiresIn: '7d',
@@ -909,8 +990,85 @@ const setRecoveryString = async (ctx) => {
   }
 }
 
+const getUserSessions = async (ctx) => {
+  try {
+    const token = ctx.request.header.authorization?.split(' ')[1];
+    if (!token) return ctx.unauthorized('No token provided');
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+      // @ts-ignore
+      where: { cccd: decoded.cccd },
+    });
+
+    if (!user) return ctx.notFound('User not found');
+
+    const sessions = await strapi.db.connection('user_sessions')
+      .where({ user_id: user.id })
+      .orderBy('last_login_at', 'desc');
+
+    return ctx.send({ data: sessions });
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') return ctx.unauthorized('Invalid token');
+    console.error('Get user sessions error:', err);
+    return ctx.internalServerError('An error occurred while fetching user sessions');
+  }
+};
+
+const toggleSessionStatus = async (ctx) => {
+  try {
+    const token = ctx.request.header.authorization?.split(' ')[1];
+    if (!token) return ctx.unauthorized('No token provided');
+
+    const { session_id, otp } = ctx.request.body;
+    if (!session_id || !otp) return ctx.badRequest('session_id and otp are required');
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+      // @ts-ignore
+      where: { cccd: decoded.cccd },
+    });
+
+    if (!user) return ctx.notFound('User not found');
+
+    // Verify OTP
+    // Coerce to string to safely compare
+    if (String(user.otp) !== String(otp)) {
+      return ctx.badRequest('Invalid OTP');
+    }
+
+    // Find the session (must belong to this user for security)
+    const session = await strapi.db.connection('user_sessions')
+      .where({ id: session_id, user_id: user.id })
+      .first();
+
+    if (!session) return ctx.notFound('Session not found or does not belong to you');
+
+    // Toggle status
+    const newStatus = session.status === 'login' ? 'logout' : 'login';
+    
+    await strapi.db.connection('user_sessions')
+      .where({ id: session_id })
+      .update({
+        status: newStatus,
+        updated_at: new Date()
+      });
+
+    return ctx.send({
+      success: true,
+      message: `Session status changed to ${newStatus}`,
+      session_id,
+      new_status: newStatus
+    });
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') return ctx.unauthorized('Invalid token');
+    console.error('Toggle session status error:', err);
+    return ctx.internalServerError('An error occurred while toggling session status');
+  }
+};
+
 module.exports = {
   login, register, changePassword, getMe, updateUser, searchByCCCD,
   generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo, checkQrStatus,
-  setRecoveryString
+  setRecoveryString, getUserSessions, toggleSessionStatus
 };

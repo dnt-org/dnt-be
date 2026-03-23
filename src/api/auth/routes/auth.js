@@ -151,5 +151,25 @@ module.exports = {
         description: 'Set recovery string for password recovery (requires auth token)',
       },
     },
+    {
+      method: 'GET',
+      path: '/auth/sessions',
+      handler: 'auth.getUserSessions',
+      config: {
+        auth: false,
+        policies: [],
+        description: 'Get all sessions for the logged in user',
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/sessions/toggle-status',
+      handler: 'auth.toggleSessionStatus',
+      config: {
+        auth: false,
+        policies: [],
+        description: 'Toggle a session between login and logout (requires session_id, otp)',
+      },
+    },
   ],
 };
