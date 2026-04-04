@@ -171,5 +171,15 @@ module.exports = {
         description: 'Toggle a session between login and logout (requires session_id, otp)',
       },
     },
+    {
+      method: 'POST',
+      path: '/auth/change-otp',
+      handler: 'auth.changeOtp',
+      config: {
+        auth: false,
+        policies: [],
+        description: 'Change OTP code for the logged in user (requires Bearer token)',
+      },
+    },
   ],
 };

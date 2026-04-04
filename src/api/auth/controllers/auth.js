@@ -1067,8 +1067,37 @@ const toggleSessionStatus = async (ctx) => {
   }
 };
 
+const changeOtp = async (ctx) => {
+  try {
+    const token = ctx.request.header.authorization?.split(' ')[1];
+    if (!token) return ctx.unauthorized('No token provided');
+
+    const { otp } = ctx.request.body;
+    if (!otp) return ctx.badRequest('otp is required');
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+      // @ts-ignore
+      where: { bank_number: decoded.bank_number },
+    });
+
+    if (!user) return ctx.notFound('User not found');
+
+    await strapi.db.query('plugin::users-permissions.user').update({
+      where: { id: user.id },
+      data: { otp: String(otp) },
+    });
+
+    return ctx.send({ success: true, message: 'OTP updated successfully' });
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') return ctx.unauthorized('Invalid token');
+    console.error('Change OTP error:', err);
+    return ctx.internalServerError('An error occurred while changing OTP');
+  }
+};
+
 module.exports = {
   login, register, changePassword, getMe, updateUser, searchByCCCD,
   generateQR, verifyQR, qrLogin, verifyBankNumber, generateQRinfo, checkQrStatus,
-  setRecoveryString, getUserSessions, toggleSessionStatus
+  setRecoveryString, getUserSessions, toggleSessionStatus, changeOtp
 };
