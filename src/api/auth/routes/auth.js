@@ -181,5 +181,50 @@ module.exports = {
         description: 'Change OTP code for the logged in user (requires Bearer token)',
       },
     },
+    {
+      method: 'POST',
+      path: '/auth/recovery/verify-account',
+      handler: 'recovery.verifyRecoveryAccount',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/recovery/verify-recovery',
+      handler: 'recovery.verifyRecoveryKey',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/recovery/verify-otp',
+      handler: 'recovery.verifyRecoveryOtpStep',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/recovery/verify-balance',
+      handler: 'recovery.verifyRecoveryBalance',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/auth/recovery/verify-cccd',
+      handler: 'recovery.verifyRecoveryCccd',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    }
   ],
 };

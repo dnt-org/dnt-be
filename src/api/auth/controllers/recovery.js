@@ -611,6 +611,264 @@ const verifyOtp = async (ctx) => {
     }
 };
 
+/**
+ * Shared Helper: Handle verification failure logic
+ */
+const handleRecoveryFailure = async (ctx, user, clientIp, userAgent, reason) => {
+    // Check if account is permanently BLOCKED
+    if (user.blocked) {
+        ctx.response.status = 403;
+        return ctx.body = {
+            success: false,
+            error: 'PERMANENTLY_BLOCKED',
+            message: 'Account is permanently blocked. Please contact support.',
+            isBlocked: true,
+            requiresSupport: true
+        };
+    }
+
+    // Check if account is TEMP_BLOCKED
+    const isTempBlocked = user.temp_blocked_until && new Date(user.temp_blocked_until) > new Date();
+    if (isTempBlocked) {
+        const remainingMinutes = Math.ceil((new Date(user.temp_blocked_until) - new Date()) / 60000);
+        ctx.response.status = 403;
+        return ctx.body = {
+            success: false,
+            error: 'TEMP_BLOCKED',
+            message: `Account is temporarily blocked.`,
+            remainingMinutes,
+            tempBlockedUntil: user.temp_blocked_until
+        };
+    }
+
+    const newFailureCount = (user.recovery_failure_count || 0) + 1;
+    const updateData = { recovery_failure_count: newFailureCount };
+
+    let isNowBlocked = false;
+    let isNowTempBlocked = false;
+    
+    if (newFailureCount >= 2) {
+        updateData.blocked = true;
+        isNowBlocked = true;
+    } else if (newFailureCount === 1) {
+        updateData.temp_blocked_until = new Date(Date.now() + 30 * 60 * 1000); // 30 mins
+        isNowTempBlocked = true;
+    }
+
+    await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: updateData,
+    });
+
+    await createAuditLog(strapi, {
+        action: 'RECOVERY_VERIFY_FAILED',
+        userId: user.id,
+        details: {
+            reason: reason,
+            failureCount: newFailureCount,
+            tempBlocked: isNowTempBlocked,
+            blocked: isNowBlocked
+        },
+        ipAddress: clientIp,
+        userAgent,
+    });
+
+    if (isNowBlocked) {
+        ctx.response.status = 403;
+        return ctx.body = {
+            success: false,
+            error: 'PERMANENTLY_BLOCKED',
+            message: 'Too many failures. Account is permanently blocked.',
+            isBlocked: true,
+            requiresSupport: true
+        };
+    }
+
+    if (isNowTempBlocked) {
+        ctx.response.status = 403;
+        return ctx.body = {
+            success: false,
+            error: 'TEMP_BLOCKED',
+            message: 'Too many failed recovery attempts. Account is temporarily blocked for 30 minutes.',
+            remainingMinutes: 30
+        };
+    }
+
+    return ctx.badRequest({
+        success: false,
+        error: 'INVALID_INPUT'
+    });
+};
+
+const verifyRecoveryAccount = async (ctx) => {
+    const { accountId } = ctx.request.body;
+    if (!accountId) return ctx.badRequest('accountId is required');
+    
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+    const userAgent = ctx.request.header['user-agent'] || 'unknown';
+
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { bank_number: accountId }
+    });
+
+    if (!user) {
+        // Not calling handleRecoveryFailure here to prevent brute forcing accounts via lock requests
+        return ctx.badRequest({ success: false, error: 'INVALID_ACCOUNT' });
+    }
+
+    // Pre-check locks so we don't proceed on a blocked account
+    if (user.blocked) {
+        ctx.response.status = 403;
+        return ctx.body = { success: false, error: 'PERMANENTLY_BLOCKED' };
+    }
+    if (user.temp_blocked_until && new Date(user.temp_blocked_until) > new Date()) {
+        ctx.response.status = 403;
+        return ctx.body = { success: false, error: 'TEMP_BLOCKED' };
+    }
+
+    return ctx.send({ success: true });
+};
+
+const verifyRecoveryKey = async (ctx) => {
+    const { accountId, recoveryKey } = ctx.request.body;
+    if (!accountId || !recoveryKey) return ctx.badRequest('Missing fields');
+    
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+    const userAgent = ctx.request.header['user-agent'] || 'unknown';
+
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { bank_number: accountId }
+    });
+
+    if (!user) return ctx.badRequest({ success: false });
+
+    if (!user.recovery_string) {
+        console.log('NO_RECOVERY_STRING_SET');
+        return await handleRecoveryFailure(ctx, user, clientIp, userAgent, 'NO_RECOVERY_STRING_SET');
+    }
+
+    const isValid = await verifyRecoveryString(recoveryKey, user.recovery_string);
+    if (!isValid) {
+        console.log('INVALID_RECOVERY_STRING');
+        return await handleRecoveryFailure(ctx, user, clientIp, userAgent, 'INVALID_RECOVERY_STRING');
+    }
+
+    return ctx.send({ success: true });
+};
+
+const verifyRecoveryOtpStep = async (ctx) => {
+    const { accountId, otp } = ctx.request.body;
+    if (!accountId || !otp) return ctx.badRequest('Missing fields');
+    
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+    const userAgent = ctx.request.header['user-agent'] || 'unknown';
+
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { bank_number: accountId }
+    });
+
+    if (!user) return ctx.badRequest({ success: false });
+
+    const storedOtp = user.otp || '123456';
+    if (otp !== storedOtp) {
+        return await handleRecoveryFailure(ctx, user, clientIp, userAgent, 'INVALID_OTP');
+    }
+
+    return ctx.send({ success: true });
+};
+
+const verifyRecoveryBalance = async (ctx) => {
+    const { accountId, balance } = ctx.request.body;
+    if (!accountId || balance === undefined) return ctx.badRequest('Missing fields');
+    console.log('verifyRecoveryBalance', accountId, balance);
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { bank_number: accountId },
+        populate: ['wallet']
+    });
+    console.log('verifyRecoveryBalance', user);
+    if (!user) return ctx.badRequest({ success: false });
+
+    const userBalance = user.wallet ? user.wallet.total : 0;
+    
+    if (Number(balance) !== Number(userBalance)) {
+        // According to our plan, return 400 immediately, do not add custom locks for balance mismatch
+        return ctx.badRequest({ success: false, error: 'BALANCE_MISMATCH' });
+    }
+
+    // Success (balance matches perfectly - no CCCD required)
+    const tempPassword = `temp${crypto.randomBytes(4).toString('hex')}!`;
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    
+    await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: {
+            password: hashedPassword,
+            recovery_failure_count: 0,
+            temp_blocked_until: null,
+            blocked: false
+        }
+    });
+
+    return ctx.send({ success: true, tempPassword });
+};
+
+const verifyRecoveryCccd = async (ctx) => {
+    const { accountId, fullName, idNumber } = ctx.request.body;
+    if (!accountId || !fullName || !idNumber) return ctx.badRequest('Missing fields');
+    
+    const clientIp = ctx.request.ip || ctx.request.header['x-forwarded-for'] || ctx.request.header['x-real-ip'];
+    const userAgent = ctx.request.header['user-agent'] || 'unknown';
+
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { bank_number: accountId }
+    });
+
+    if (!user) return ctx.badRequest({ success: false });
+
+    // Allow flexible matching (trim + uppercase handles simple mismatches nicely)
+    const isMatchCccd = user.cccd && String(idNumber).trim() === String(user.cccd).trim();
+    const isMatchName = user.full_name && String(fullName).trim().toUpperCase() === String(user.full_name).trim().toUpperCase();
+
+    if (!isMatchCccd || !isMatchName) {
+        // Immediate hard block
+        await strapi.db.query('plugin::users-permissions.user').update({
+            where: { id: user.id },
+            data: { blocked: true }
+        });
+
+        await createAuditLog(strapi, {
+            action: 'RECOVERY_VERIFY_CCCD_FAILED',
+            userId: user.id,
+            details: { reason: 'CCCD_MISMATCH', blocked: true },
+            ipAddress: clientIp,
+            userAgent,
+        });
+
+        ctx.response.status = 403;
+        return ctx.body = {
+            success: false,
+            error: 'PERMANENTLY_BLOCKED',
+            isBlocked: true
+        };
+    }
+
+    // Success
+    const tempPassword = `temp${crypto.randomBytes(4).toString('hex')}!`;
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    
+    await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: {
+            password: hashedPassword,
+            recovery_failure_count: 0,
+            temp_blocked_until: null,
+            blocked: false
+        }
+    });
+
+    return ctx.send({ success: true, tempPassword });
+};
+
 module.exports = {
     verifyRecovery,
     verifyOtp,
@@ -618,4 +876,9 @@ module.exports = {
     hashRecoveryString,
     setRecoveryString,
     MAX_LOGIN_FAILURES,
+    verifyRecoveryAccount,
+    verifyRecoveryKey,
+    verifyRecoveryOtpStep,
+    verifyRecoveryBalance,
+    verifyRecoveryCccd
 };

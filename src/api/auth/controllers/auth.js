@@ -263,6 +263,7 @@ const login = async (ctx) => {
 const verifyPassword = async (plainTextPassword, hashedPassword) => {
   try {
     const match = await bcrypt.compare(plainTextPassword, hashedPassword);
+    console.log('verifyPassword', match);
     return match; // Returns true if the passwords match, false otherwise
   } catch (error) {
     console.error('Error comparing passwords:', error);
@@ -476,12 +477,12 @@ const getMe = async (ctx) => {
     // Remove sensitive information
     const { password, ...userWithoutPassword } = user;
 
-    const userFinal = {
+    const safeUserDTO = {
       ...userWithoutPassword,
       avt: userWithoutPassword.avt?.url
     }
 
-    return ctx.send(userFinal);
+    return ctx.send(safeUserDTO);
   } catch (err) {
     if (err.name === 'JsonWebTokenError') {
       return ctx.unauthorized('Invalid token');
