@@ -37,8 +37,8 @@ jobs:
       - name: Copy artifact to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: 27.71.27.147
-          username: root
+          host: 34.21.175.175
+          username: dainghiatin_director
           password: ${{ secrets.SSH_PASSWORD }}
           source: deploy.tar.gz
           target: /root/dnt-be-deploy
