@@ -19,14 +19,7 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: [
-        'https://customer-web-snowy.vercel.app',
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'https://customer-journey-web-xlk7.vercel.app',
-        'http://27.71.27.147',
-        '*'
-      ],
+      origin: '*',
       headers: ['*'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       keepHeaderOnError: true,
