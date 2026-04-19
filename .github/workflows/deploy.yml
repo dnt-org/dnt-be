@@ -29,37 +29,29 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # ─── Step 2: Build Docker Image (includes env via --build-arg) ─
+      # ─── Step 2: Build & Push Docker Image to Docker Hub ──────────
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set image tag
+        id: tag
+        run: echo "TAG=${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:${{ github.sha }}" >> $GITHUB_OUTPUT
+
       - name: Build Docker image
         run: |
-          # Parse each line from ENV_FILE and pass as --build-arg
-          BUILD_ARGS=""
-          while IFS= read -r line; do
-            # Skip empty lines and comments
-            [[ -z "$line" || "$line" == \#* ]] && continue
-            # Extract key only (docker build-arg needs KEY=VALUE)
-            BUILD_ARGS="$BUILD_ARGS --build-arg $line"
-          done <<< "${{ secrets.ENV_FILE }}"
+          docker build -t ${{ steps.tag.outputs.TAG }} -t ${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:latest .
+          echo "✓ Docker image built: ${{ steps.tag.outputs.TAG }}"
 
-          docker build $BUILD_ARGS -t dnt-be:latest .
-          echo "✓ Docker image built"
-
-      - name: Save Docker image to tarball
+      - name: Push Docker image to Docker Hub
         run: |
-          docker save dnt-be:latest | gzip > dnt-be.tar.gz
-          echo "✓ Docker image saved as dnt-be.tar.gz ($(du -sh dnt-be.tar.gz | cut -f1))"
+          docker push ${{ steps.tag.outputs.TAG }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:latest
+          echo "✓ Image pushed to Docker Hub"
 
-      # ─── Step 3: Copy to VPS ───────────────────────────────────────
-      - name: Copy Docker image to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: dnt-be.tar.gz
-          target: /tmp/dnt-be-deploy
-
-      # ─── Step 4: Write .env on VPS ─────────────────────────────────
+      # ─── Step 3: Write .env on VPS ─────────────────────────────────
       - name: Write .env file on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -71,13 +63,12 @@ jobs:
             APP_DIR="/home/${{ secrets.SSH_USERNAME }}/dnt-be"
             mkdir -p "$APP_DIR"
 
-            # Write env file from secret
             printf '%s\n' '${{ secrets.ENV_FILE }}' > "$APP_DIR/.env"
             chmod 600 "$APP_DIR/.env"
-            echo "✓ .env file written to $APP_DIR/.env"
+            echo "✓ .env written to $APP_DIR/.env"
 
-      # ─── Step 5: Load Image & Start Container on VPS ──────────────
-      - name: Start Docker container on VPS
+      # ─── Step 4: Pull Image & Start Container on VPS ──────────────
+      - name: Pull image and start container on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -86,18 +77,19 @@ jobs:
           script: |
             set -e
             APP_DIR="/home/${{ secrets.SSH_USERNAME }}/dnt-be"
-            IMAGE_TAR="/tmp/dnt-be-deploy/dnt-be.tar.gz"
+            IMAGE="${{ steps.tag.outputs.TAG }}"
 
             echo "========================================="
             echo "Starting Docker deployment..."
+            echo "Image: $IMAGE"
             echo "========================================="
 
-            # Load the new image
-            echo "Loading Docker image..."
-            docker load < "$IMAGE_TAR"
-            echo "✓ Docker image loaded"
+            # Pull the new image from Docker Hub
+            echo "Pulling image..."
+            docker pull "$IMAGE"
+            echo "✓ Image pulled"
 
-            # Stop and remove existing container if running
+            # Stop and remove existing container if it exists
             if docker inspect dnt-be > /dev/null 2>&1; then
               echo "Stopping existing container..."
               docker stop dnt-be || true
@@ -112,16 +104,12 @@ jobs:
               --restart unless-stopped \
               -p 1337:1337 \
               --env-file "$APP_DIR/.env" \
-              dnt-be:latest
+              "$IMAGE"
             echo "✓ Container started"
 
-            # Clean up tarball
-            rm -f "$IMAGE_TAR"
-            echo "✓ Cleaned up tarball"
-
-            # Remove dangling images to free disk space
+            # Remove unused images to keep disk clean
             docker image prune -f || true
-            echo "✓ Pruned dangling images"
+            echo "✓ Pruned unused images"
 
             # Health check
             echo ""
@@ -142,7 +130,7 @@ jobs:
               sleep 2
             done
 
-            echo "❌ Service health check failed after 80 seconds"
+            echo "❌ Health check failed after 80 seconds"
             echo ""
             echo "Container logs:"
             docker logs dnt-be --tail 30
