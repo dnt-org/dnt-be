@@ -46,8 +46,8 @@ jobs:
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 27.71.27.147
-          username: root
+          host: 34.21.175.175
+          username: dainghiatin_director
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             # Create deployment directory if it doesn't exist
