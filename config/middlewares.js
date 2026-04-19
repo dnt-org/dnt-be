@@ -19,7 +19,15 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: ['http://34.21.175.175:1337', 'http://34.21.175.175:3000', 'http://34.21.175.175', 'https://dnt.trwq-ta.io.vn', 'https://dnt-admin.trwq-ta.io.vn', 'http://dnt.trwq-ta.io.vn'],
+      origin: ['http://34.21.175.175:1337', 
+        'http://34.21.175.175:3000', 
+        'http://34.21.175.175', 
+        'https://dnt.trwq-ta.io.vn', 
+        'https://dnt-admin.trwq-ta.io.vn', 
+        'http://dnt.trwq-ta.io.vn',
+        'https://customer-web-snowy.vercel.app',
+        'customer-web-snowy.vercel.app'
+      ],
       headers: ['*'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       keepHeaderOnError: true,
