@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main # Change this if your main branch has a different name
+      - main
 
 jobs:
   build-and-deploy:
@@ -16,9 +16,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # Adjust to match your project's node version
+          node-version: '18'
 
-      - name: Create .env file
+      - name: Create .env file for build
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
 
@@ -30,16 +30,12 @@ jobs:
 
       - name: Create deployment artifact tarball
         run: |
-          # Package all necessary files for production
-          # Explicitly include only what's needed
           tar -czf deploy.tar.gz \
             package.json \
             package-lock.json \
             build/ \
-            public/ \
-            .env
+            public/
           
-          # Verify tarball was created successfully
           if [ ! -f deploy.tar.gz ]; then
             echo "Error: Failed to create deployment artifact"
             exit 1
@@ -48,75 +44,162 @@ jobs:
       - name: Copy artifact to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           source: deploy.tar.gz
           target: /tmp/dnt-be-deploy
+
+      - name: Setup environment on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            
+            APP_DIR="/home/dainghiatin_director/dnt-be"
+            mkdir -p "$APP_DIR"
+            
+            # Create .env file from GitHub secrets
+            cat > "$APP_DIR/.env" << 'ENVEOF'
+            ${{ secrets.ENV_FILE }}
+            ENVEOF
+            
+            chmod 600 "$APP_DIR/.env"
+            echo "✓ .env file created/updated"
+            
+            # Create PM2 ecosystem config with all environment variables
+            cat > "$APP_DIR/ecosystem.config.js" << 'ECOSYSTEMEOF'
+            module.exports = {
+              apps: [
+                {
+                  name: 'dnt-be',
+                  script: './node_modules/.bin/strapi',
+                  args: 'start',
+                  instances: 1,
+                  exec_mode: 'fork',
+                  watch: false,
+                  max_memory_restart: '1G',
+                  env: {
+            ${{ secrets.ENV_FILE }}
+                  }
+                }
+              ]
+            };
+            ECOSYSTEMEOF
+            
+            chmod 644 "$APP_DIR/ecosystem.config.js"
+            echo "✓ PM2 ecosystem config created with all environment variables"
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            set -e  # Exit on any error
+            set -e
             
-            # Define directories
             DEPLOY_DIR="/tmp/dnt-be-deploy"
             APP_DIR="/home/dainghiatin_director/dnt-be"
             BACKUP_DIR="/home/dainghiatin_director/dnt-be-backup"
             
-            # Create directories
             mkdir -p "$APP_DIR"
             mkdir -p "$BACKUP_DIR"
             
-            # Extract to temporary directory first
+            echo "========================================="
+            echo "Starting deployment..."
+            echo "========================================="
+            
+            # Extract to temporary directory
             TEMP_EXTRACT="/tmp/dnt-extract-$$"
             mkdir -p "$TEMP_EXTRACT"
             tar -xzf "$DEPLOY_DIR/deploy.tar.gz" -C "$TEMP_EXTRACT"
+            echo "✓ Extracted deployment artifact"
             
-            # Backup current production (if it exists)
+            # Backup current build
             if [ -d "$APP_DIR/build" ]; then
-              cp -r "$APP_DIR/build" "$BACKUP_DIR/build-$(date +%s)" || true
+              BACKUP_TIME=$(date +%s)
+              cp -r "$APP_DIR/build" "$BACKUP_DIR/build-$BACKUP_TIME" || true
+              echo "✓ Backup created: build-$BACKUP_TIME"
             fi
             
             # Move new build to app directory
             cp -r "$TEMP_EXTRACT"/* "$APP_DIR/"
+            echo "✓ Build files updated"
             
-            # Clean up temporary files
+            # Verify critical files exist
+            if [ ! -f "$APP_DIR/.env" ]; then
+              echo "❌ ERROR: .env file not found!"
+              exit 1
+            fi
+            
+            if [ ! -f "$APP_DIR/ecosystem.config.js" ]; then
+              echo "❌ ERROR: ecosystem.config.js not found!"
+              exit 1
+            fi
+            
+            if [ ! -f "$APP_DIR/package.json" ]; then
+              echo "❌ ERROR: package.json not found!"
+              exit 1
+            fi
+            
+            echo "✓ All critical files verified"
+            
+            # Clean up
             rm -rf "$TEMP_EXTRACT"
             rm "$DEPLOY_DIR/deploy.tar.gz"
             
-            # Navigate to app directory
             cd "$APP_DIR"
             
             # Install production dependencies
+            echo "Installing dependencies..."
             npm ci --omit=dev
+            echo "✓ Dependencies installed"
             
-            # Check if PM2 process exists
+            # Stop existing PM2 process if running
             if pm2 describe dnt-be > /dev/null 2>&1; then
-              echo "Restarting existing PM2 process..."
-              pm2 restart dnt-be --update-env
-            else
-              echo "Starting new PM2 process..."
-              pm2 start npm --name "dnt-be" -- run start
+              echo "Stopping PM2 process: dnt-be"
+              pm2 stop dnt-be || true
+              sleep 2
             fi
             
-            # Save PM2 state for startup on reboot
-            pm2 save
+            # Start or restart with ecosystem config (loads all env vars)
+            echo "Starting PM2 process with all environment variables..."
+            pm2 start ecosystem.config.js --update-env
             
-            # Health check - wait for service to be ready
-            echo "Waiting for service to start..."
-            for i in {1..30}; do
+            # Save PM2 state for reboot
+            pm2 save
+            echo "✓ PM2 process started and saved"
+            
+            # Health check
+            echo ""
+            echo "Waiting for service to be healthy..."
+            for i in {1..40}; do
               if curl -f http://localhost:1337/health > /dev/null 2>&1; then
-                echo "✓ Service is healthy"
+                echo "✓ Service is healthy!"
+                echo ""
+                echo "========================================="
+                echo "✅ Deployment successful!"
+                echo "========================================="
+                echo "App running at: http://localhost:1337"
+                echo ""
                 exit 0
               fi
-              echo "Attempt $i/30 - waiting for service..."
-              sleep 2
+              
+              if [ $((i % 5)) -eq 0 ]; then
+                echo "  Waiting... (attempt $i/40)"
+              fi
+              sleep 1
             done
             
-            echo "⚠ Service did not respond to health check"
+            echo "❌ Service health check failed after 40 seconds"
+            echo ""
+            echo "Debugging info:"
+            pm2 logs dnt-be --lines 20
             exit 1
