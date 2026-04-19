@@ -65,8 +65,8 @@ jobs:
             
             # Define directories
             DEPLOY_DIR="/tmp/dnt-be-deploy"
-            APP_DIR="/root/dnt-be"
-            BACKUP_DIR="/root/dnt-be-backup"
+            APP_DIR="/home/dainghiatin_director/dnt-be"
+            BACKUP_DIR="/home/dainghiatin_director/dnt-be-backup"
             
             # Create directories
             mkdir -p "$APP_DIR"
