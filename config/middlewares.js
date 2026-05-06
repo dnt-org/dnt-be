@@ -26,7 +26,8 @@ module.exports = [
         'https://dnt-admin.trwq-ta.io.vn', 
         'http://dnt.trwq-ta.io.vn',
         'https://customer-web-snowy.vercel.app',
-        'customer-web-snowy.vercel.app'
+        'customer-web-snowy.vercel.app',
+        'http://localhost:5173'
       ],
       headers: ['*'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
