@@ -1,4 +1,4 @@
-# Firebase Realtime Database Integration
+# Firebase Realtime Database Integration  
 
 This document explains how to use the Firebase Realtime Database integration in your Strapi CMS service.
 
