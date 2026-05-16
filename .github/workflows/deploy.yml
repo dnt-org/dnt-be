@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
       # ─── Step 1: Build Code ────────────────────────────────────────
       - name: Create .env file for build
@@ -24,7 +25,7 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Build project
         run: npm run build
@@ -40,16 +41,19 @@ jobs:
         id: tag
         run: echo "TAG=${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:${{ github.sha }}" >> $GITHUB_OUTPUT
 
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ steps.tag.outputs.TAG }} -t ${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:latest .
-          echo "✓ Docker image built: ${{ steps.tag.outputs.TAG }}"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Push Docker image to Docker Hub
-        run: |
-          docker push ${{ steps.tag.outputs.TAG }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:latest
-          echo "✓ Image pushed to Docker Hub"
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.tag.outputs.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dnt-be:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # ─── Step 3: Write .env on VPS ─────────────────────────────────
       - name: Write .env file on VPS
