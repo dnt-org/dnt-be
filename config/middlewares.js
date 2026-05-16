@@ -27,11 +27,13 @@ module.exports = [
         'http://dnt.trwq-ta.io.vn',
         'https://customer-web-snowy.vercel.app',
         'customer-web-snowy.vercel.app',
-        'http://localhost:5173'
+        'http://localhost:5173',
+        'https://diniti.vn',
+        'https://www.diniti.vn'
       ],
       headers: ['*'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      keepHeaderOnError: true,
+      keepHeaderOnError: false,
     },
   },
   'strapi::poweredBy',
