@@ -18,11 +18,17 @@ module.exports = [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
-      origin: ['*'],
+      enabled: false,
+      origin: ['http://34.21.175.175:1337', 
+        'https://customer-web-snowy.vercel.app',
+        'customer-web-snowy.vercel.app',
+        'http://localhost:5173',
+        'https://diniti.vn',
+        'https://www.diniti.vn'
+      ],
       headers: ['*'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      keepHeaderOnError: false,
+      keepHeaderOnError: true,
     },
   },
   'strapi::poweredBy',
