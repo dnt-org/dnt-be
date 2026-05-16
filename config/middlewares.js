@@ -18,7 +18,7 @@ module.exports = [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
+      enabled: false,
       origin: ['http://34.21.175.175:1337', 
         'http://34.21.175.175:3000', 
         'http://34.21.175.175', 
