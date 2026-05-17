@@ -1,16 +1,15 @@
 'use strict';
 
-const { PDFDocument, StandardFonts } = require('pdf-lib');
-
 module.exports = {
   async generate(ctx) {
     try {
       const { body } = ctx.request;
-      const html = await strapi.service('api::contract.contract').generate(body);
+      const docxBuffer = await strapi.service('api::contract.contract').generate(body);
       
-      // Set response type to HTML
-      ctx.set('Content-Type', 'text/html');
-      ctx.send(html);
+      // Set response type to docx
+      ctx.set('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      ctx.set('Content-Disposition', 'attachment; filename="contract.docx"');
+      ctx.send(docxBuffer);
     } catch (err) {
       ctx.throw(500, err.message);
     }

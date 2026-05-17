@@ -2,51 +2,88 @@
 
 const fs = require('fs');
 const path = require('path');
+const PizZip = require('pizzip');
+const Docxtemplater = require('docxtemplater');
+const https = require('https');
+const http = require('http');
+
+// Helper to download remote file into buffer
+const downloadFile = (url) => {
+  return new Promise((resolve, reject) => {
+    const client = url.startsWith('https') ? https : http;
+    client.get(url, (res) => {
+      if (res.statusCode !== 200) {
+        return reject(new Error(`Failed to download template, status code: ${res.statusCode}`));
+      }
+      const data = [];
+      res.on('data', (chunk) => data.push(chunk));
+      res.on('end', () => resolve(Buffer.concat(data)));
+    }).on('error', (err) => reject(err));
+  });
+};
 
 module.exports = ({ strapi }) => ({
   async generate(data) {
-    const templatePath = path.join(process.cwd(), 'templates', 'contract.html');
+    let collateral;
     
-    if (!fs.existsSync(templatePath)) {
-      throw new Error('Template not found');
+    // Find collateral by code or id
+    if (data.collateralCode) {
+      const collaterals = await strapi.entityService.findMany('api::collateral.collateral', {
+        filters: { code: data.collateralCode },
+        populate: { file: true },
+        limit: 1,
+      });
+      collateral = collaterals[0];
+    } else {
+      const collateralId = typeof data.collateral === 'object' && data.collateral !== null 
+        ? data.collateral.id 
+        : (data.collateral || data.collateralId || data.collateral_id);
+        
+      if (!collateralId) {
+        throw new Error('collateral ID or collateralCode is missing from data');
+      }
+      
+      collateral = await strapi.entityService.findOne('api::collateral.collateral', collateralId, {
+        populate: { file: true }
+      });
     }
 
-    let content = fs.readFileSync(templatePath, 'utf8');
+    if (!collateral || !collateral.file || collateral.file.length === 0) {
+      throw new Error('Collateral or template file not found');
+    }
 
-    // Replace placeholders {{var-name}}
-    content = content.replace(/\{\{([\w\-\.]+)\}\}/g, (match, key) => {
-      const keys = key.split('.');
-      let value = data;
-      
-      for (const k of keys) {
-        if (value && typeof value === 'object' && k in value) {
-          value = value[k];
-        } else {
-          // If key not found in data, check if it's a top-level key that wasn't found (e.g. if path is wrong)
-          // For now, return match to leave it as is, or empty string?
-          // Usually better to leave it if not found, or replace with empty string.
-          // Let's return match (leave it) to debug, or empty string.
-          // User said "consider paramenter is {{var-name}}".
-          // Let's return empty string if not found to avoid ugly {{...}} in output, 
-          // but strictly speaking, if data is missing, maybe keep it?
-          // I'll replace with empty string if strictly not found, but "match" is safer if I'm not sure.
-          // Let's try to resolve.
-          return match;
-        }
+    // Get the first file's URL
+    const fileMeta = collateral.file[0];
+    const fileUrl = fileMeta.url;
+    
+    // Load template buffer (local or remote)
+    let contentBuffer;
+    if (fileUrl.startsWith('http')) {
+      contentBuffer = await downloadFile(fileUrl);
+    } else {
+      const filePath = path.join(process.cwd(), 'public', fileUrl);
+      if (!fs.existsSync(filePath)) {
+        throw new Error('Local template file not found: ' + filePath);
       }
-      
-      if (typeof value === 'object') {
-        // If it's an object (like country), try to use .label or .value if available, or JSON stringify
-        // But for a contract, [object Object] is bad.
-        // If the template just says {{country}}, and country is {value, label}, what to do?
-        // Maybe default to .value or .label?
-        // Or just return the value if it's not object.
-        return JSON.stringify(value); 
-      }
-      
-      return value !== undefined && value !== null ? String(value) : '';
+      contentBuffer = fs.readFileSync(filePath);
+    }
+
+    // Process docx template
+    const zip = new PizZip(contentBuffer);
+    const doc = new Docxtemplater(zip, {
+      paragraphLoop: true,
+      linebreaks: true,
     });
 
-    return content;
+    // Replace fields
+    doc.render(data);
+
+    // Return the generated docx buffer
+    const buf = doc.getZip().generate({
+      type: 'nodebuffer',
+      compression: 'DEFLATE',
+    });
+
+    return buf;
   },
 });
