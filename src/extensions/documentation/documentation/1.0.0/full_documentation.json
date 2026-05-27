@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-05-16T14:49:39.279Z"
+    "x-generation-date": "2026-05-27T12:33:06.479Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -24,7 +24,7 @@
   },
   "servers": [
     {
-      "url": "http://ec2-47-129-153-124.ap-southeast-1.compute.amazonaws.com:1337/api",
+      "url": "https://dnt-admin.trwq-ta.io.vn/api",
       "description": "Development server"
     }
   ],

@@ -30,7 +30,7 @@ module.exports = {
       handler: 'product.create',
       config: {
         auth: false,
-        policies: [],
+        policies: ['global::require-cccd-verified'],
       }
     },
     {

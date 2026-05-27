@@ -24,6 +24,7 @@ module.exports = {
       handler: 'live.create',
       config: {
         auth: false,
+        policies: ['global::require-cccd-verified'],
       },
     },
     {

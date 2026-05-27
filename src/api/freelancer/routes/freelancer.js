@@ -26,7 +26,11 @@ module.exports = {
     {
       method: 'POST',
       path: '/freelancers',
-      handler: 'freelancer.create'
+      handler: 'freelancer.create',
+      config: {
+        auth: false,
+        policies: ['global::require-cccd-verified'],
+      },
     },
     {
       method: 'PUT',

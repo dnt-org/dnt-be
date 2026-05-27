@@ -12,7 +12,7 @@ module.exports = {
       handler: 'custom-controller.createProduct',
       config: {
         auth: false,
-        policies: [],
+        policies: ['global::require-cccd-verified'],
       }
     },
      {
