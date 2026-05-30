@@ -22,5 +22,15 @@ module.exports = {
         description: 'Get the latest business information for the authenticated user',
       },
     },
+    {
+      method: 'POST',
+      path: '/business/verify',
+      handler: 'business.verifyBusiness',
+      config: {
+        auth: false,
+        policies: [],
+        description: 'Verify business by checking if user-documents exist for the authenticated user',
+      },
+    },
   ],
 };

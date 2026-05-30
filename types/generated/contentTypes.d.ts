@@ -1140,6 +1140,39 @@ export interface ApiSystemInfoSystemInfo extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiUserDocumentUserDocument
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'user_documents';
+  info: {
+    description: '';
+    displayName: 'User document';
+    pluralName: 'user-documents';
+    singularName: 'user-document';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    business_id: Schema.Attribute.Integer;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    file: Schema.Attribute.Media<'images' | 'files' | 'videos', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-document.user-document'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_id: Schema.Attribute.Integer;
+  };
+}
+
 export interface ApiVideoVideo extends Struct.CollectionTypeSchema {
   collectionName: 'videos';
   info: {
@@ -1899,6 +1932,7 @@ declare module '@strapi/strapi' {
       'api::product.product': ApiProductProduct;
       'api::system-configuration.system-configuration': ApiSystemConfigurationSystemConfiguration;
       'api::system-info.system-info': ApiSystemInfoSystemInfo;
+      'api::user-document.user-document': ApiUserDocumentUserDocument;
       'api::video.video': ApiVideoVideo;
       'api::wallet.wallet': ApiWalletWallet;
       'api::with-drawth-transaction.with-drawth-transaction': ApiWithDrawthTransactionWithDrawthTransaction;

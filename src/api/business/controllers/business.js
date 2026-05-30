@@ -13,7 +13,7 @@ const createOrUpdateBusiness = async (ctx) => {
     const token = ctx.request.header.authorization?.split(' ')[1];
     if (!token) {
       return ctx.unauthorized('No token provided');
-    }
+    } 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -36,6 +36,7 @@ const createOrUpdateBusiness = async (ctx) => {
       current_address_nation_code,
       current_address_map,
       status,
+      documents, // [{ type: string, file_ids: number[] }]
     } = ctx.request.body;
 
     // Check if user already has a business record (get the latest one)
@@ -102,10 +103,64 @@ const createOrUpdateBusiness = async (ctx) => {
       data: { business_id: business.id },
     });
 
+    // Upsert user-document records if documents were provided
+    const savedDocuments = [];
+    if (Array.isArray(documents) && documents.length > 0) {
+      for (const doc of documents) {
+        if (!doc.type) continue;
+
+        const fileConnections = Array.isArray(doc.file_ids)
+          ? doc.file_ids.map((id) => ({ id }))
+          : [];
+
+        // Check if a user_document with the same type + user_id already exists
+        const existing = await strapi.entityService.findMany(
+          'api::user-document.user-document',
+          {
+            filters: { type: doc.type, user_id: user.id },
+            limit: 1,
+          }
+        );
+
+        let savedDoc;
+        if (existing && existing.length > 0) {
+          // Update existing document record
+          savedDoc = await strapi.entityService.update(
+            'api::user-document.user-document',
+            existing[0].id,
+            {
+              data: {
+                type: doc.type,
+                business_id: business.id,
+                file: fileConnections,
+              },
+            }
+          );
+        } else {
+          // Create new document record
+          savedDoc = await strapi.entityService.create(
+            'api::user-document.user-document',
+            {
+              data: {
+                type: doc.type,
+                user_id: user.id,
+                business_id: business.id,
+                file: fileConnections,
+                publishedAt: new Date(),
+              },
+            }
+          );
+        }
+
+        savedDocuments.push(savedDoc);
+      }
+    }
+
     return ctx.send({
       success: true,
       message: existingBusiness ? 'Business updated successfully' : 'Business created successfully',
       data: business,
+      documents: savedDocuments,
     });
   } catch (err) {
     if (err.name === 'JsonWebTokenError') {
@@ -163,7 +218,76 @@ const getMyBusiness = async (ctx) => {
   }
 };
 
+/**
+ * Verify business for the authenticated user.
+ * Looks up user-document records by user_id.
+ * If documents exist → marks business status as 'verified' and returns pass.
+ * If no documents found → returns fail.
+ */
+const verifyBusiness = async (ctx) => {
+  try {
+    const token = ctx.request.header.authorization?.split(' ')[1];
+    if (!token) {
+      return ctx.unauthorized('No token provided');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await strapi.db.query('plugin::users-permissions.user').findOne({
+      where: { id: decoded.id },
+    });
+
+    if (!user) {
+      return ctx.notFound('User not found');
+    }
+
+
+    // Find user-documents by user_id
+    const userDocuments = await strapi.entityService.findMany(
+      'api::user-document.user-document',
+      {
+        filters: { user_id: user.id },
+        populate: ['file'],
+      }
+    );
+
+    if (!userDocuments || userDocuments.length === 0) {
+      return ctx.send({
+        success: false,
+        verified: false,
+        message: 'Verification failed: no documents found for this user',
+      });
+    }
+
+    // Persist verified status on the business record
+    const business = await strapi.db.connection('businesses')
+      .where({ user_id: user.id })
+      .orderBy('id', 'desc')
+      .first();
+
+    if (business) {
+      await strapi.db.connection('businesses')
+        .where({ id: business.id })
+        .update({ status: 'verified', updated_at: new Date() });
+    }
+
+    return ctx.send({
+      success: true,
+      verified: true,
+      message: 'Business verified successfully',
+    });
+
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
+      return ctx.unauthorized('Invalid token');
+    }
+    console.error('Verify business error:', err);
+    return ctx.internalServerError('An error occurred while verifying business');
+  }
+};
+
 module.exports = {
   createOrUpdateBusiness,
   getMyBusiness,
+  verifyBusiness,
 };

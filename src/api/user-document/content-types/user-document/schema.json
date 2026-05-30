@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_documents",
+  "info": {
+    "singularName": "user-document",
+    "pluralName": "user-documents",
+    "displayName": "User document",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "type": {
+      "type": "string"
+    },
+    "file": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ]
+    },
+    "user_id": {
+      "type": "integer"
+    },
+    "business_id": {
+      "type": "integer"
+    }
+  }
+}
