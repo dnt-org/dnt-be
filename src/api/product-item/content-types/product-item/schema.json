@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_items",
+  "info": {
+    "singularName": "product-item",
+    "pluralName": "product-items",
+    "displayName": "Product Item"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "productItems"
+    },
+    "rowIndex": {
+      "type": "integer",
+      "min": 0
+    },
+    "name": { "type": "string" },
+    "model": { "type": "string" },
+    "size": { "type": "string" },
+    "color": { "type": "string" },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "videoFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["videos"]
+    },
+    "qualityInfoFile": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["files", "images"]
+    },
+    "warrantyChangeDays": { "type": "integer", "min": 0 },
+    "warrantyRepairDays": { "type": "integer", "min": 0 },
+    "repairWarrantyRetentionPercent": { "type": "decimal", "min": 0, "max": 100 },
+    "maxDeliveryDaysAfterAcceptance": { "type": "integer", "min": 0 },
+    "handoverLocation": { "type": "string" },
+    "contractDurationMultiplicity": { "type": "string" },
+    "contractDurationUnit": { "type": "string" },
+    "directPayment": { "type": "string" },
+    "depositRequirementDirect": { "type": "decimal", "min": 0 },
+    "paymentViaWallet": { "type": "string" },
+    "depositRequirementWallet": { "type": "decimal", "min": 0 },
+    "vat": { "type": "string" },
+    "quantityMinimum": { "type": "integer", "min": 0 },
+    "unit": { "type": "string" },
+    "unitMarketPrice": { "type": "decimal", "min": 0 },
+    "unitAskingPrice": { "type": "decimal", "min": 0 },
+    "amountDesired": { "type": "decimal", "min": 0 },
+    "autoAcceptPrice": { "type": "decimal", "min": 0 }
+  }
+}

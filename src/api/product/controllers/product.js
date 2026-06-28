@@ -2,7 +2,7 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-const FILE_FIELDS = [
+const PRODUCT_FILE_FIELDS = [
   'videoFile',
   'livestreamVideoFile', 'livestreamCertFile',
   'advertisingVideoFile', 'advertisingCertFile',
@@ -11,7 +11,20 @@ const FILE_FIELDS = [
   'regPersonalBrandProductProfile', 'regPersonalBrandCertFile',
 ];
 
-// Schema-level string keys that hold boolean values when sent as form strings
+const ITEM_FILE_FIELDS = ['image', 'videoFile', 'qualityInfoFile'];
+
+// Scalar fields that belong on the product (not items)
+const ITEM_SCALAR_FIELDS = [
+  'rowIndex', 'name', 'model', 'size', 'color',
+  'warrantyChangeDays', 'warrantyRepairDays', 'repairWarrantyRetentionPercent',
+  'maxDeliveryDaysAfterAcceptance', 'handoverLocation',
+  'contractDurationMultiplicity', 'contractDurationUnit',
+  'directPayment', 'depositRequirementDirect',
+  'paymentViaWallet', 'depositRequirementWallet',
+  'vat', 'quantityMinimum', 'unit',
+  'unitMarketPrice', 'unitAskingPrice', 'amountDesired', 'autoAcceptPrice',
+];
+
 const BOOL_FIELDS = [
   'displayPrice', 'hidePrice', 'confirmOwnership',
   'regLivestreamGoods', 'regLivestreamGoodsAI', 'regLivestreamGoodsPerson',
@@ -22,7 +35,8 @@ const BOOL_FIELDS = [
 function parseBody(raw) {
   const data = {};
   for (const [key, val] of Object.entries(raw)) {
-    if (FILE_FIELDS.includes(key)) continue;
+    if (PRODUCT_FILE_FIELDS.includes(key)) continue;
+    if (key === 'items' || key === 'productItems') continue; // handled separately
     if (val === '' || val === undefined || val === null) continue;
     if (BOOL_FIELDS.includes(key)) {
       data[key] = val === true || val === 'true' || val === '1';
@@ -31,6 +45,28 @@ function parseBody(raw) {
     }
   }
   return data;
+}
+
+function parseItemData(raw) {
+  const data = {};
+  for (const field of ITEM_SCALAR_FIELDS) {
+    const val = raw[field];
+    if (val === '' || val === undefined || val === null) continue;
+    data[field] = val;
+  }
+  // Use the FE local id as rowIndex if not already set
+  if (data.rowIndex === undefined && raw.id !== undefined) {
+    data.rowIndex = raw.id;
+  }
+  return data;
+}
+
+async function uploadFile(strapi, ref, refId, field, file) {
+  const [uploaded] = await strapi.plugins.upload.services.upload.upload({
+    data: { ref, refId, field },
+    files: Array.isArray(file) ? file : [file],
+  });
+  return uploaded?.id ?? null;
 }
 
 module.exports = createCoreController('api::product.product', ({ strapi }) => ({
@@ -43,42 +79,70 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
         ? ctx.request.body || {}
         : ctx.request.body?.data ?? ctx.request.body ?? {};
 
-      if (typeof rawBody.items === 'string') {
-        try { rawBody.items = JSON.parse(rawBody.items); } catch { rawBody.items = []; }
+      // Parse items — may come as JSON string (multipart) or array (JSON body)
+      let rawItems = rawBody.items ?? rawBody.productItems ?? [];
+      if (typeof rawItems === 'string') {
+        try { rawItems = JSON.parse(rawItems); } catch { rawItems = []; }
       }
+      if (!Array.isArray(rawItems)) rawItems = [];
 
-      const data = {
+      // Build product-level data
+      const productData = {
         ...parseBody(rawBody),
         status: rawBody.status || 'draft',
         poster: user?.id ?? null,
       };
 
-      const entity = await strapi.entityService.create('api::product.product', {
-        data,
-        populate: FILE_FIELDS,
+      // Create product (no items yet)
+      const product = await strapi.entityService.create('api::product.product', {
+        data: productData,
       });
 
-      // Attach uploaded files (multipart only)
+      // Attach product-level files
       if (ctx.is('multipart') && ctx.request.files) {
         const fileUpdates = {};
-        for (const field of FILE_FIELDS) {
+        for (const field of PRODUCT_FILE_FIELDS) {
           const file = ctx.request.files[field];
           if (!file) continue;
-          const [uploaded] = await strapi.plugins.upload.services.upload.upload({
-            data: { ref: 'api::product.product', refId: entity.id, field },
-            files: Array.isArray(file) ? file : [file],
-          });
-          if (uploaded) fileUpdates[field] = uploaded.id;
+          const id = await uploadFile(strapi, 'api::product.product', product.id, field, file);
+          if (id) fileUpdates[field] = id;
         }
         if (Object.keys(fileUpdates).length) {
-          await strapi.entityService.update('api::product.product', entity.id, {
-            data: fileUpdates,
-          });
+          await strapi.entityService.update('api::product.product', product.id, { data: fileUpdates });
         }
       }
 
-      const result = await strapi.entityService.findOne('api::product.product', entity.id, {
-        populate: [...FILE_FIELDS, 'poster'],
+      // Create each product-item
+      for (const rawItem of rawItems) {
+        const itemData = {
+          ...parseItemData(rawItem),
+          product: product.id,
+        };
+
+        const item = await strapi.entityService.create('api::product-item.product-item', {
+          data: itemData,
+        });
+
+        // Attach item-level files (multipart only, keyed as items[0][image] etc.)
+        if (ctx.is('multipart') && ctx.request.files) {
+          const idx = rawItem.id ?? rawItems.indexOf(rawItem);
+          const fileUpdates = {};
+          for (const field of ITEM_FILE_FIELDS) {
+            const file = ctx.request.files[`items[${idx}][${field}]`]
+              || ctx.request.files[`items.${idx}.${field}`];
+            if (!file) continue;
+            const id = await uploadFile(strapi, 'api::product-item.product-item', item.id, field, file);
+            if (id) fileUpdates[field] = id;
+          }
+          if (Object.keys(fileUpdates).length) {
+            await strapi.entityService.update('api::product-item.product-item', item.id, { data: fileUpdates });
+          }
+        }
+      }
+
+      // Return product with items populated
+      const result = await strapi.entityService.findOne('api::product.product', product.id, {
+        populate: [...PRODUCT_FILE_FIELDS, 'poster', 'productItems'],
       });
 
       return { data: result };
@@ -108,7 +172,7 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
 
       let products = await strapi.entityService.findMany('api::product.product', {
         filters,
-        populate: ['videoFile', 'poster'],
+        populate: ['videoFile', 'poster', 'productItems'],
         start: (pageNum - 1) * pageSizeNum,
         limit: pageSizeNum,
       });

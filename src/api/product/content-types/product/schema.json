@@ -84,9 +84,11 @@
       "default": false
     },
 
-    "items": {
-      "type": "json",
-      "description": "Per-row product grid data (name, model, size, warranty, pricing, delivery, payment…)"
+    "productItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product-item.product-item",
+      "mappedBy": "product"
     },
 
     "successFee": {
