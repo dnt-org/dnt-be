@@ -58,6 +58,15 @@ module.exports = {
         auth: false,
         policies: [],
       }
+    },
+    {
+      method: 'POST',
+      path: '/products/:id/files/:field',
+      handler: 'product.uploadFile',
+      config: {
+        auth: false,
+        policies: ['global::require-cccd-verified'],
+      }
     }
   ]
 };

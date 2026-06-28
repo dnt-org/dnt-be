@@ -905,6 +905,13 @@ export interface ApiProductItemProductItem extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    autoRejectPrice: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     color: Schema.Attribute.String;
     contractDurationMultiplicity: Schema.Attribute.String;
     contractDurationUnit: Schema.Attribute.String;
@@ -971,6 +978,13 @@ export interface ApiProductItemProductItem extends Struct.CollectionTypeSchema {
       >;
     shape: Schema.Attribute.String;
     size: Schema.Attribute.String;
+    timeUserMustPayAfterDelivery: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     unit: Schema.Attribute.String;
     unitAskingPrice: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
@@ -998,6 +1012,7 @@ export interface ApiProductItemProductItem extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    warrantyPolicyFile: Schema.Attribute.Media<'files' | 'images'>;
     warrantyRepairDays: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
@@ -1303,6 +1318,46 @@ export interface ApiSystemInfoSystemInfo extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     videoViews: Schema.Attribute.BigInteger & Schema.Attribute.DefaultTo<0>;
     withdrawn: Schema.Attribute.BigInteger & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface ApiUploadJobUploadJob extends Struct.CollectionTypeSchema {
+  collectionName: 'upload_jobs';
+  info: {
+    displayName: 'Upload Job';
+    pluralName: 'upload-jobs';
+    singularName: 'upload-job';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    error: Schema.Attribute.Text;
+    fieldName: Schema.Attribute.String;
+    fileName: Schema.Attribute.String;
+    fileSize: Schema.Attribute.Integer;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::upload-job.upload-job'
+    > &
+      Schema.Attribute.Private;
+    product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
+    productItem: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::product-item.product-item'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      ['pending', 'uploading', 'done', 'failed']
+    > &
+      Schema.Attribute.DefaultTo<'pending'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -2136,6 +2191,7 @@ declare module '@strapi/strapi' {
       'api::product.product': ApiProductProduct;
       'api::system-configuration.system-configuration': ApiSystemConfigurationSystemConfiguration;
       'api::system-info.system-info': ApiSystemInfoSystemInfo;
+      'api::upload-job.upload-job': ApiUploadJobUploadJob;
       'api::user-document.user-document': ApiUserDocumentUserDocument;
       'api::video.video': ApiVideoVideo;
       'api::vietnam-info.vietnam-info': ApiVietnamInfoVietnamInfo;

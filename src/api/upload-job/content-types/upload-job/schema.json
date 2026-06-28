@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "upload_jobs",
+  "info": {
+    "singularName": "upload-job",
+    "pluralName": "upload-jobs",
+    "displayName": "Upload Job"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product"
+    },
+    "productItem": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product-item.product-item"
+    },
+    "fieldName": { "type": "string" },
+    "fileName": { "type": "string" },
+    "fileSize": { "type": "integer" },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "uploading", "done", "failed"],
+      "default": "pending"
+    },
+    "error": { "type": "text" }
+  }
+}
