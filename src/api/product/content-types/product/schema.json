@@ -11,23 +11,65 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "name": {
+
+    "status": {
+      "type": "enumeration",
+      "enum": ["draft", "pending", "approved", "rejected"],
+      "default": "draft"
+    },
+    "listingType": {
+      "type": "string",
+      "required": true,
+      "default": "SALE"
+    },
+    "categoryType": {
+      "type": "string",
+      "required": true,
+      "default": "GOODS"
+    },
+    "conditionType": {
+      "type": "string",
+      "default": "NEW"
+    },
+    "nation": {
       "type": "string"
     },
-    "model": {
+    "province": {
       "type": "string"
     },
-    "size": {
+    "address": {
+      "type": "text"
+    },
+    "goodsAddress": {
+      "type": "text"
+    },
+    "geographicScope": {
       "type": "string"
     },
-    "color": {
+    "priceReviewTime": {
+      "type": "string",
+      "description": "HH:mm"
+    },
+    "timeLive": {
+      "type": "datetime"
+    },
+    "endPostDate": {
+      "type": "datetime"
+    },
+    "shape": {
       "type": "string"
     },
-    "price": {
-      "type": "decimal"
+    "custom_id": {
+      "type": "string"
     },
-    "askingPrice": {
-      "type": "decimal"
+    "personInCharge": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
     },
     "displayPrice": {
       "type": "boolean",
@@ -37,290 +79,19 @@
       "type": "boolean",
       "default": false
     },
-    "location": {
-      "type": "string"
-    },
-    "address": {
-      "type": "text"
-    },
-    "description": {
-      "type": "text"
-    },
-    "estimatedValue": {
-      "type": "decimal"
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "qualityFiles": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "files"
-      ]
-    },
-    "deliveryDate": {
-      "type": "date",
-      "description": "Day of delivery after accept"
-    },
-    "depositRequirement": {
-      "type": "string",
-      "description": "Deposit requirement"
-    },
-    "autoAcceptPrice": {
-      "type": "decimal",
-      "description": "Price to automatically accept"
-    },
-    "unit": {
-      "type": "string"
-    },
-    "marketPrice": {
-      "type": "decimal"
-    },
-    "lowUnitPrice": {
-      "type": "decimal",
-      "min": 0
-    },
-    "lowestUnitAskingPrice": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Lowest unit asking price"
-    },
-    "highestUnitAskingPrice": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Highest unit asking price"
-    },
-    "deliveryDays": {
-      "type": "integer",
-      "min": 0,
-      "description": "Number of days to delivery after accept"
-    },
-    "endPostTime": {
-      "type": "datetime",
-      "description": "End post time"
-    },
-    "lowestAmount": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Lowest amount"
-    },
-    "highestAmount": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Highest amount"
-    },
-    "lowestAutoAcceptPrice": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Lowest price to automatically accept"
-    },
-    "highestAutoAcceptPrice": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Highest price to automatically accept"
-    },
-    "contractDuration": {
-      "type": "integer",
-      "min": 0,
-      "description": "Contract duration in days"
-    },
-    "personInCharge": {
-      "type": "string",
-      "description": "Other person in charge"
-    },
-    "phoneNumber": {
-      "type": "string"
-    },
-    "email": {
-      "type": "email"
-    },
     "confirmOwnership": {
       "type": "boolean",
-      "default": false,
-      "description": "Confirm ownership and responsibility about the goods"
+      "default": false
     },
-    "eventFeePercentage": {
-      "type": "decimal",
-      "min": 0,
-      "max": 100,
-      "description": "Event fee percentage"
-    },
-    "livestreamFee": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Livestream fee"
-    },
-    "advertisingAmount": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Amount for advertising"
-    },
-    "showOnMainPage": {
-      "type": "decimal",
-      "default": 0,
-      "description": "Display on main page"
-    },
-    "showOnVideo": {
-      "type": "decimal",
-      "default": 0,
-      "description": "Display on video"
-    },
-    "advertisingUrl": {
-      "type": "string",
-      "description": "Advertising content URL"
-    },
-    "registerForAdvertising": {
-      "type": "boolean",
-      "default": false,
-      "description": "Register to make advertising"
-    },
-    "successFee": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Success fee"
-    },
-    "totalFees": {
-      "type": "decimal",
-      "min": 0,
-      "description": "Total fees"
-    },
-    "listingType": {
-      "type": "string",
-      "required": true,
-      "default": "sale"
-    },
-    "categoryType": {
-      "type": "string",
-      "required": true,
-      "default": "goods"
-    },
-    "conditionType": {
-      "type": "string",
-      "default": "new",
-      "required": true
-    },
-    "nation": {
-      "type": "string"
-    },
-    "province": {
-      "type": "string"
-    },
-    "custom_id": {
-      "type": "string",
-      "required": false
-    },
-    "setPrice": {
-      "type": "decimal"
-    },
-    "shape": {
-      "type": "string"
-    },
-    "priceReviewTime": {
-      "type": "string",
-      "description": "HH:mm format"
-    },
-    "timeLive": {
-      "type": "datetime"
-    },
-    "endPostDate": {
-      "type": "datetime"
-    },
-    "goodsAddress": {
-      "type": "text"
-    },
-    "geographicScope": {
-      "type": "string"
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "draft",
-        "pending",
-        "approved",
-        "rejected"
-      ],
-      "default": "draft"
-    },
+
     "items": {
       "type": "json",
-      "description": "Product grid rows as JSON array"
+      "description": "Per-row product grid data (name, model, size, warranty, pricing, delivery, payment…)"
     },
-    "warrantyChangeDays": {
-      "type": "integer",
-      "min": 0
-    },
-    "warrantyPolicy": {
-      "type": "string"
-    },
-    "warrantyRepairDays": {
-      "type": "integer",
-      "min": 0
-    },
-    "repairWarrantyRetentionPercent": {
-      "type": "decimal",
-      "min": 0,
-      "max": 100
-    },
-    "maxDeliveryDays": {
-      "type": "integer",
-      "min": 0
-    },
-    "handoverLocation": {
-      "type": "string"
-    },
-    "contractDurationMultiplicity": {
-      "type": "string"
-    },
-    "contractDurationUnit": {
-      "type": "string"
-    },
-    "directPayment": {
-      "type": "string"
-    },
-    "depositRequirementDirect": {
+
+    "successFee": {
       "type": "decimal",
       "min": 0
-    },
-    "paymentViaWallet": {
-      "type": "string"
-    },
-    "depositRequirementWallet": {
-      "type": "decimal",
-      "min": 0
-    },
-    "vat": {
-      "type": "string"
-    },
-    "quantityMinimum": {
-      "type": "integer",
-      "min": 0
-    },
-    "unitMarketPrice": {
-      "type": "decimal",
-      "min": 0
-    },
-    "unitAskingPrice": {
-      "type": "decimal",
-      "min": 0
-    },
-    "amountDesired": {
-      "type": "decimal",
-      "min": 0
-    },
-    "videoFile": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "videos"
-      ]
     },
     "eventPercentFee": {
       "type": "decimal",
@@ -334,7 +105,17 @@
       "type": "integer",
       "min": 0
     },
+    "videoFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["videos"]
+    },
     "livestreamPercentFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "livestreamFee": {
       "type": "decimal",
       "min": 0
     },
@@ -345,18 +126,13 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "videos"
-      ]
+      "allowedTypes": ["videos"]
     },
     "livestreamCertFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
     "advertisingPercent": {
       "type": "decimal",
@@ -366,141 +142,83 @@
       "type": "decimal",
       "min": 0
     },
+    "advertisingAmount": {
+      "type": "decimal",
+      "min": 0
+    },
     "advertisingVideoFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "videos"
-      ]
+      "allowedTypes": ["videos"]
     },
     "advertisingCertFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
-    "regLivestreamGoods": {
-      "type": "boolean",
-      "default": false
-    },
-    "regLivestreamGoodsPercent": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regLivestreamGoodsFee": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regLivestreamGoodsAI": {
-      "type": "boolean",
-      "default": false
-    },
-    "regLivestreamGoodsPerson": {
-      "type": "boolean",
-      "default": false
-    },
+
+    "regLivestreamGoods": { "type": "boolean", "default": false },
+    "regLivestreamGoodsPercent": { "type": "decimal", "min": 0 },
+    "regLivestreamGoodsFee": { "type": "decimal", "min": 0 },
+    "regLivestreamGoodsAI": { "type": "boolean", "default": false },
+    "regLivestreamGoodsPerson": { "type": "boolean", "default": false },
     "regLivestreamProductProfile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
     "regLivestreamCertFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
-    "regProductAdVideo": {
-      "type": "boolean",
-      "default": false
-    },
-    "regProductAdPercent": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regProductAdFee": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regProductAdAI": {
-      "type": "boolean",
-      "default": false
-    },
-    "regProductAdPerson": {
-      "type": "boolean",
-      "default": false
-    },
+
+    "regProductAdVideo": { "type": "boolean", "default": false },
+    "regProductAdPercent": { "type": "decimal", "min": 0 },
+    "regProductAdFee": { "type": "decimal", "min": 0 },
+    "regProductAdAI": { "type": "boolean", "default": false },
+    "regProductAdPerson": { "type": "boolean", "default": false },
+    "regProductAdPlatformSupport": { "type": "boolean", "default": false },
     "regProductAdCompanyProfile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
     "regProductAdCertFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
-    "regProductAdPlatformSupport": {
-      "type": "boolean",
-      "default": false
-    },
-    "regPersonalBrandVideo": {
-      "type": "boolean",
-      "default": false
-    },
-    "regPersonalBrandPercent": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regPersonalBrandFee": {
-      "type": "decimal",
-      "min": 0
-    },
-    "regPersonalBrandAI": {
-      "type": "boolean",
-      "default": false
-    },
-    "regPersonalBrandPerson": {
-      "type": "boolean",
-      "default": false
-    },
+
+    "regPersonalBrandVideo": { "type": "boolean", "default": false },
+    "regPersonalBrandPercent": { "type": "decimal", "min": 0 },
+    "regPersonalBrandFee": { "type": "decimal", "min": 0 },
+    "regPersonalBrandAI": { "type": "boolean", "default": false },
+    "regPersonalBrandPerson": { "type": "boolean", "default": false },
     "regPersonalBrandProductProfile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
     "regPersonalBrandCertFile": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files",
-        "images"
-      ]
+      "allowedTypes": ["files", "images"]
     },
+
+    "totalFees": {
+      "type": "decimal",
+      "min": 0
+    },
+
     "poster": {
       "type": "relation",
       "relation": "manyToOne",
