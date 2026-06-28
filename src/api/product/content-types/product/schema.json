@@ -504,8 +504,7 @@
     "poster": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": null
+      "target": "plugin::users-permissions.user"
     }
   }
 }
