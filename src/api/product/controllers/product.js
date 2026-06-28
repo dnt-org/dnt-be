@@ -167,9 +167,20 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
         populate[field] = true;
       }
 
-      const result = await strapi.entityService.findOne('api::product.product', id, {
-        populate,
-      });
+      const asNumber = Number(id);
+      const isNumericId = Number.isInteger(asNumber) && String(asNumber) === String(id);
+
+      let result = null;
+      if (isNumericId) {
+        result = await strapi.entityService.findOne('api::product.product', asNumber, { populate });
+      } else {
+        const found = await strapi.entityService.findMany('api::product.product', {
+          filters: { custom_id: id },
+          limit: 1,
+          populate,
+        });
+        result = Array.isArray(found) ? found[0] : null;
+      }
 
       if (!result) return ctx.notFound();
       return { data: result };
