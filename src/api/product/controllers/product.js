@@ -113,7 +113,8 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
       }
 
       // Create each product-item
-      for (const rawItem of rawItems) {
+      for (let i = 0; i < rawItems.length; i++) {
+        const rawItem = rawItems[i];
         const itemData = {
           ...parseItemData(rawItem),
           product: product.id,
@@ -125,11 +126,10 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
 
         // Attach item-level files (multipart only, keyed as items[0][image] etc.)
         if (ctx.is('multipart') && ctx.request.files) {
-          const idx = rawItem.id ?? rawItems.indexOf(rawItem);
           const fileUpdates = {};
           for (const field of ITEM_FILE_FIELDS) {
-            const file = ctx.request.files[`items[${idx}][${field}]`]
-              || ctx.request.files[`items.${idx}.${field}`];
+            const file = ctx.request.files[`items[${i}][${field}]`]
+              || ctx.request.files[`items.${i}.${field}`];
             if (!file) continue;
             const id = await uploadFile(strapi, 'api::product-item.product-item', item.id, field, file);
             if (id) fileUpdates[field] = id;
