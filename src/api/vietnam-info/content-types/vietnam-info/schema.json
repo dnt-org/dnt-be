@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "vietnam_infos",
+  "info": {
+    "singularName": "vietnam-info",
+    "pluralName": "vietnam-infos",
+    "displayName": "Vietnam info"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "tinh": {
+      "type": "json",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

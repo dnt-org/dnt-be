@@ -1234,6 +1234,43 @@ export interface ApiVideoVideo extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiVietnamInfoVietnamInfo extends Struct.SingleTypeSchema {
+  collectionName: 'vietnam_infos';
+  info: {
+    displayName: 'Vietnam info';
+    pluralName: 'vietnam-infos';
+    singularName: 'vietnam-info';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::vietnam-info.vietnam-info'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    tinh: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiWalletWallet extends Struct.CollectionTypeSchema {
   collectionName: 'wallets';
   info: {
@@ -1934,6 +1971,7 @@ declare module '@strapi/strapi' {
       'api::system-info.system-info': ApiSystemInfoSystemInfo;
       'api::user-document.user-document': ApiUserDocumentUserDocument;
       'api::video.video': ApiVideoVideo;
+      'api::vietnam-info.vietnam-info': ApiVietnamInfoVietnamInfo;
       'api::wallet.wallet': ApiWalletWallet;
       'api::with-drawth-transaction.with-drawth-transaction': ApiWithDrawthTransactionWithDrawthTransaction;
       'plugin::content-releases.release': PluginContentReleasesRelease;
