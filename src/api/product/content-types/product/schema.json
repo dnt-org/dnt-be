@@ -218,6 +218,294 @@
     },
     "setPrice": {
       "type": "decimal"
+    },
+    "shape": {
+      "type": "string"
+    },
+    "priceReviewTime": {
+      "type": "string",
+      "description": "HH:mm format"
+    },
+    "timeLive": {
+      "type": "datetime"
+    },
+    "endPostDate": {
+      "type": "datetime"
+    },
+    "goodsAddress": {
+      "type": "text"
+    },
+    "geographicScope": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "draft"
+    },
+    "items": {
+      "type": "json",
+      "description": "Product grid rows as JSON array"
+    },
+    "warrantyChangeDays": {
+      "type": "integer",
+      "min": 0
+    },
+    "warrantyPolicy": {
+      "type": "string"
+    },
+    "warrantyRepairDays": {
+      "type": "integer",
+      "min": 0
+    },
+    "repairWarrantyRetentionPercent": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "maxDeliveryDays": {
+      "type": "integer",
+      "min": 0
+    },
+    "handoverLocation": {
+      "type": "string"
+    },
+    "contractDurationMultiplicity": {
+      "type": "string"
+    },
+    "contractDurationUnit": {
+      "type": "string"
+    },
+    "directPayment": {
+      "type": "string"
+    },
+    "depositRequirementDirect": {
+      "type": "decimal",
+      "min": 0
+    },
+    "paymentViaWallet": {
+      "type": "string"
+    },
+    "depositRequirementWallet": {
+      "type": "decimal",
+      "min": 0
+    },
+    "vat": {
+      "type": "string"
+    },
+    "quantityMinimum": {
+      "type": "integer",
+      "min": 0
+    },
+    "unitMarketPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "unitAskingPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "amountDesired": {
+      "type": "decimal",
+      "min": 0
+    },
+    "videoFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "eventPercentFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "eventFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "mainPageViewCount": {
+      "type": "integer",
+      "min": 0
+    },
+    "livestreamPercentFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "livestreamNote": {
+      "type": "string"
+    },
+    "livestreamVideoFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "livestreamCertFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "advertisingPercent": {
+      "type": "decimal",
+      "min": 0
+    },
+    "advertisingFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "advertisingVideoFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "advertisingCertFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regLivestreamGoods": {
+      "type": "boolean",
+      "default": false
+    },
+    "regLivestreamGoodsPercent": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regLivestreamGoodsFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regLivestreamGoodsAI": {
+      "type": "boolean",
+      "default": false
+    },
+    "regLivestreamGoodsPerson": {
+      "type": "boolean",
+      "default": false
+    },
+    "regLivestreamProductProfile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regLivestreamCertFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regProductAdVideo": {
+      "type": "boolean",
+      "default": false
+    },
+    "regProductAdPercent": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regProductAdFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regProductAdAI": {
+      "type": "boolean",
+      "default": false
+    },
+    "regProductAdPerson": {
+      "type": "boolean",
+      "default": false
+    },
+    "regProductAdCompanyProfile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regProductAdCertFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regProductAdPlatformSupport": {
+      "type": "boolean",
+      "default": false
+    },
+    "regPersonalBrandVideo": {
+      "type": "boolean",
+      "default": false
+    },
+    "regPersonalBrandPercent": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regPersonalBrandFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "regPersonalBrandAI": {
+      "type": "boolean",
+      "default": false
+    },
+    "regPersonalBrandPerson": {
+      "type": "boolean",
+      "default": false
+    },
+    "regPersonalBrandProductProfile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "regPersonalBrandCertFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "poster": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": null
     }
   }
 }
