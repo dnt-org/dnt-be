@@ -11,18 +11,18 @@ const PRODUCT_FILE_FIELDS = [
   'regPersonalBrandProductProfile', 'regPersonalBrandCertFile',
 ];
 
-const ITEM_FILE_FIELDS = ['image', 'videoFile', 'qualityInfoFile'];
+const ITEM_FILE_FIELDS = ['image', 'videoFile', 'qualityInfoFile', 'warrantyPolicyFile'];
 
-// Scalar fields that belong on the product (not items)
 const ITEM_SCALAR_FIELDS = [
-  'rowIndex', 'name', 'model', 'size', 'color',
+  'rowIndex', 'name', 'model', 'shape', 'size', 'color',
   'warrantyChangeDays', 'warrantyRepairDays', 'repairWarrantyRetentionPercent',
   'maxDeliveryDaysAfterAcceptance', 'handoverLocation',
   'contractDurationMultiplicity', 'contractDurationUnit',
   'directPayment', 'depositRequirementDirect',
   'paymentViaWallet', 'depositRequirementWallet',
-  'vat', 'quantityMinimum', 'unit',
-  'unitMarketPrice', 'unitAskingPrice', 'amountDesired', 'autoAcceptPrice',
+  'vat', 'timeUserMustPayAfterDelivery', 'quantityMinimum', 'unit',
+  'unitMarketPrice', 'unitAskingPrice', 'amountDesired',
+  'autoAcceptPrice', 'autoRejectPrice',
 ];
 
 const BOOL_FIELDS = [

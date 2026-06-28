@@ -22,6 +22,7 @@
     },
     "name": { "type": "string" },
     "model": { "type": "string" },
+    "shape": { "type": "string" },
     "size": { "type": "string" },
     "color": { "type": "string" },
     "image": {
@@ -42,6 +43,12 @@
       "required": false,
       "allowedTypes": ["files", "images"]
     },
+    "warrantyPolicyFile": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files", "images"]
+    },
     "warrantyChangeDays": { "type": "integer", "min": 0 },
     "warrantyRepairDays": { "type": "integer", "min": 0 },
     "repairWarrantyRetentionPercent": { "type": "decimal", "min": 0, "max": 100 },
@@ -54,11 +61,13 @@
     "paymentViaWallet": { "type": "string" },
     "depositRequirementWallet": { "type": "decimal", "min": 0 },
     "vat": { "type": "string" },
+    "timeUserMustPayAfterDelivery": { "type": "integer", "min": 0 },
     "quantityMinimum": { "type": "integer", "min": 0 },
     "unit": { "type": "string" },
     "unitMarketPrice": { "type": "decimal", "min": 0 },
     "unitAskingPrice": { "type": "decimal", "min": 0 },
     "amountDesired": { "type": "decimal", "min": 0 },
-    "autoAcceptPrice": { "type": "decimal", "min": 0 }
+    "autoAcceptPrice": { "type": "decimal", "min": 0 },
+    "autoRejectPrice": { "type": "decimal", "min": 0 }
   }
 }

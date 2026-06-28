@@ -880,6 +880,134 @@ export interface ApiPaymentTransactionPaymentTransaction
   };
 }
 
+export interface ApiProductItemProductItem extends Struct.CollectionTypeSchema {
+  collectionName: 'product_items';
+  info: {
+    displayName: 'Product Item';
+    pluralName: 'product-items';
+    singularName: 'product-item';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amountDesired: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    autoAcceptPrice: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    color: Schema.Attribute.String;
+    contractDurationMultiplicity: Schema.Attribute.String;
+    contractDurationUnit: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    depositRequirementDirect: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    depositRequirementWallet: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    directPayment: Schema.Attribute.String;
+    handoverLocation: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-item.product-item'
+    > &
+      Schema.Attribute.Private;
+    maxDeliveryDaysAfterAcceptance: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    model: Schema.Attribute.String;
+    name: Schema.Attribute.String;
+    paymentViaWallet: Schema.Attribute.String;
+    product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
+    publishedAt: Schema.Attribute.DateTime;
+    qualityInfoFile: Schema.Attribute.Media<'files' | 'images', true>;
+    quantityMinimum: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    repairWarrantyRetentionPercent: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    rowIndex: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    shape: Schema.Attribute.String;
+    size: Schema.Attribute.String;
+    unit: Schema.Attribute.String;
+    unitAskingPrice: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    unitMarketPrice: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vat: Schema.Attribute.String;
+    videoFile: Schema.Attribute.Media<'videos'>;
+    warrantyChangeDays: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    warrantyRepairDays: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+  };
+}
+
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
@@ -900,77 +1028,56 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         },
         number
       >;
-    advertisingUrl: Schema.Attribute.String;
-    askingPrice: Schema.Attribute.Decimal;
-    autoAcceptPrice: Schema.Attribute.Decimal;
-    categoryType: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'goods'>;
-    color: Schema.Attribute.String;
-    conditionType: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'new'>;
-    confirmOwnership: Schema.Attribute.Boolean &
-      Schema.Attribute.DefaultTo<false>;
-    contractDuration: Schema.Attribute.Integer &
+    advertisingCertFile: Schema.Attribute.Media<'files' | 'images'>;
+    advertisingFee: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
         },
         number
       >;
+    advertisingPercent: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    advertisingVideoFile: Schema.Attribute.Media<'videos'>;
+    categoryType: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'GOODS'>;
+    conditionType: Schema.Attribute.String & Schema.Attribute.DefaultTo<'NEW'>;
+    confirmOwnership: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     custom_id: Schema.Attribute.String;
-    deliveryDate: Schema.Attribute.Date;
-    deliveryDays: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    depositRequirement: Schema.Attribute.String;
-    description: Schema.Attribute.Text;
     displayPrice: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     email: Schema.Attribute.Email;
-    endPostTime: Schema.Attribute.DateTime;
-    estimatedValue: Schema.Attribute.Decimal;
-    eventFeePercentage: Schema.Attribute.Decimal &
+    endPostDate: Schema.Attribute.DateTime;
+    eventFee: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          max: 100;
           min: 0;
         },
         number
       >;
+    eventPercentFee: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    geographicScope: Schema.Attribute.String;
+    goodsAddress: Schema.Attribute.Text;
     hidePrice: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    highestAmount: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    highestAutoAcceptPrice: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    highestUnitAskingPrice: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    image: Schema.Attribute.Media<'images'>;
     listingType: Schema.Attribute.String &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'sale'>;
+      Schema.Attribute.DefaultTo<'SALE'>;
+    livestreamCertFile: Schema.Attribute.Media<'files' | 'images'>;
     livestreamFee: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -978,57 +1085,115 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    livestreamNote: Schema.Attribute.String;
+    livestreamPercentFee: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    livestreamVideoFile: Schema.Attribute.Media<'videos'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::product.product'
     > &
       Schema.Attribute.Private;
-    location: Schema.Attribute.String;
-    lowestAmount: Schema.Attribute.Decimal &
+    mainPageViewCount: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
         },
         number
       >;
-    lowestAutoAcceptPrice: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    lowestUnitAskingPrice: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    lowUnitPrice: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
-    marketPrice: Schema.Attribute.Decimal;
-    model: Schema.Attribute.String;
-    name: Schema.Attribute.String;
     nation: Schema.Attribute.String;
     personInCharge: Schema.Attribute.String;
     phoneNumber: Schema.Attribute.String;
-    price: Schema.Attribute.Decimal;
+    poster: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    priceReviewTime: Schema.Attribute.String;
+    productItems: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-item.product-item'
+    >;
     province: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    qualityFiles: Schema.Attribute.Media<'files', true>;
-    registerForAdvertising: Schema.Attribute.Boolean &
+    regLivestreamCertFile: Schema.Attribute.Media<'files' | 'images'>;
+    regLivestreamGoods: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
-    setPrice: Schema.Attribute.Decimal;
-    showOnMainPage: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
-    showOnVideo: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
-    size: Schema.Attribute.String;
+    regLivestreamGoodsAI: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regLivestreamGoodsFee: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regLivestreamGoodsPercent: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regLivestreamGoodsPerson: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regLivestreamProductProfile: Schema.Attribute.Media<'files' | 'images'>;
+    regPersonalBrandAI: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regPersonalBrandCertFile: Schema.Attribute.Media<'files' | 'images'>;
+    regPersonalBrandFee: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regPersonalBrandPercent: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regPersonalBrandPerson: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regPersonalBrandProductProfile: Schema.Attribute.Media<'files' | 'images'>;
+    regPersonalBrandVideo: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regProductAdAI: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regProductAdCertFile: Schema.Attribute.Media<'files' | 'images'>;
+    regProductAdCompanyProfile: Schema.Attribute.Media<'files' | 'images'>;
+    regProductAdFee: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regProductAdPercent: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    regProductAdPerson: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regProductAdPlatformSupport: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    regProductAdVideo: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    shape: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<
+      ['draft', 'pending', 'approved', 'rejected']
+    > &
+      Schema.Attribute.DefaultTo<'draft'>;
     successFee: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -1036,6 +1201,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    timeLive: Schema.Attribute.DateTime;
     totalFees: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -1043,10 +1209,10 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         },
         number
       >;
-    unit: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    videoFile: Schema.Attribute.Media<'videos'>;
   };
 }
 
@@ -1966,6 +2132,7 @@ declare module '@strapi/strapi' {
       'api::movie.movie': ApiMovieMovie;
       'api::noti-template.noti-template': ApiNotiTemplateNotiTemplate;
       'api::payment-transaction.payment-transaction': ApiPaymentTransactionPaymentTransaction;
+      'api::product-item.product-item': ApiProductItemProductItem;
       'api::product.product': ApiProductProduct;
       'api::system-configuration.system-configuration': ApiSystemConfigurationSystemConfiguration;
       'api::system-info.system-info': ApiSystemInfoSystemInfo;
