@@ -152,6 +152,32 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
     }
   },
 
+  async findOne(ctx) {
+    try {
+      const { id } = ctx.params;
+
+      const populate = {
+        poster: true,
+        productItems: {
+          populate: ITEM_FILE_FIELDS,
+          sort: ['rowIndex:asc'],
+        },
+      };
+      for (const field of PRODUCT_FILE_FIELDS) {
+        populate[field] = true;
+      }
+
+      const result = await strapi.entityService.findOne('api::product.product', id, {
+        populate,
+      });
+
+      if (!result) return ctx.notFound();
+      return { data: result };
+    } catch (err) {
+      return ctx.badRequest('Error fetching product', { error: err.message });
+    }
+  },
+
   async uploadFile(ctx) {
     const { id, field } = ctx.params;
     if (!PRODUCT_FILE_FIELDS.includes(field)) {
