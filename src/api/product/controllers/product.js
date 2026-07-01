@@ -32,6 +32,83 @@ const BOOL_FIELDS = [
   'regPersonalBrandVideo', 'regPersonalBrandAI', 'regPersonalBrandPerson',
 ];
 
+function getBaseUrl(ctx) {
+  const configured = strapi?.config?.get?.('server.url');
+  if (configured) return configured.replace(/\/$/, '');
+  const host = ctx?.request?.header?.host;
+  const protocol = ctx?.request?.protocol;
+  if (!host || !protocol) return '';
+  return `${protocol}://${host}`;
+}
+
+function normalizeUrl(baseUrl, url) {
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith('/')) return `${baseUrl}${url}`;
+  return url;
+}
+
+function extractMediaUrls(media, baseUrl) {
+  if (!media) return [];
+
+  if (Array.isArray(media)) {
+    return media.flatMap((m) => extractMediaUrls(m, baseUrl));
+  }
+
+  if (media.url) {
+    const u = normalizeUrl(baseUrl, media.url);
+    return u ? [u] : [];
+  }
+
+  if (media.data) {
+    if (Array.isArray(media.data)) {
+      return media.data.flatMap((d) => extractMediaUrls(d, baseUrl));
+    }
+    return extractMediaUrls(media.data, baseUrl);
+  }
+
+  if (media.attributes?.url) {
+    const u = normalizeUrl(baseUrl, media.attributes.url);
+    return u ? [u] : [];
+  }
+
+  return [];
+}
+
+function attachFileLinks(result, ctx) {
+  if (!result) return result;
+  const baseUrl = getBaseUrl(ctx);
+
+  const productFiles = {};
+  for (const field of PRODUCT_FILE_FIELDS) {
+    const urls = extractMediaUrls(result[field], baseUrl);
+    if (urls.length) productFiles[field] = urls.length === 1 ? urls[0] : urls;
+  }
+
+  const itemFiles = Array.isArray(result.productItems)
+    ? result.productItems.map((it) => {
+      const files = {};
+      for (const field of ITEM_FILE_FIELDS) {
+        const urls = extractMediaUrls(it?.[field], baseUrl);
+        if (urls.length) files[field] = urls.length === 1 ? urls[0] : urls;
+      }
+      return {
+        id: it?.id,
+        rowIndex: it?.rowIndex,
+        ...files,
+      };
+    })
+    : [];
+
+  return {
+    ...result,
+    fileLinks: {
+      product: productFiles,
+      items: itemFiles,
+    },
+  };
+}
+
 function parseBody(raw) {
   const data = {};
   for (const [key, val] of Object.entries(raw)) {
@@ -141,11 +218,20 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
       }
 
       // Return product with items populated
-      const result = await strapi.entityService.findOne('api::product.product', product.id, {
-        populate: [...PRODUCT_FILE_FIELDS, 'poster', 'productItems'],
-      });
+      const populate = {
+        poster: true,
+        productItems: {
+          populate: ITEM_FILE_FIELDS,
+          sort: ['rowIndex:asc'],
+        },
+      };
+      for (const field of PRODUCT_FILE_FIELDS) {
+        populate[field] = true;
+      }
 
-      return { data: result };
+      const result = await strapi.entityService.findOne('api::product.product', product.id, { populate });
+
+      return { data: attachFileLinks(result, ctx) };
     } catch (err) {
       strapi.log.error('product.create:', err);
       return ctx.badRequest('Tạo hàng hóa thất bại', { error: err.message });
@@ -174,16 +260,26 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
       if (isNumericId) {
         result = await strapi.entityService.findOne('api::product.product', asNumber, { populate });
       } else {
-        const found = await strapi.entityService.findMany('api::product.product', {
-          filters: { custom_id: id },
-          limit: 1,
-          populate,
-        });
+        let found = [];
+        try {
+          found = await strapi.entityService.findMany('api::product.product', {
+            filters: { $or: [{ custom_id: id }, { documentId: id }] },
+            limit: 1,
+            populate,
+          });
+        } catch (_) {
+          const dbFound = await strapi.db.query('api::product.product').findMany({
+            where: { $or: [{ custom_id: id }, { documentId: id }] },
+            limit: 1,
+            populate,
+          });
+          found = dbFound;
+        }
         result = Array.isArray(found) ? found[0] : null;
       }
 
       if (!result) return ctx.notFound();
-      return { data: result };
+      return { data: attachFileLinks(result, ctx) };
     } catch (err) {
       return ctx.badRequest('Error fetching product', { error: err.message });
     }
@@ -248,7 +344,19 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
 
       let products = await strapi.entityService.findMany('api::product.product', {
         filters,
-        populate: ['videoFile', 'poster', 'productItems'],
+        populate: (() => {
+          const populate = {
+            poster: true,
+            productItems: {
+              populate: ITEM_FILE_FIELDS,
+              sort: ['rowIndex:asc'],
+            },
+          };
+          for (const field of PRODUCT_FILE_FIELDS) {
+            populate[field] = true;
+          }
+          return populate;
+        })(),
         start: (pageNum - 1) * pageSizeNum,
         limit: pageSizeNum,
       });
@@ -260,7 +368,7 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
       }
 
       return {
-        data: products,
+        data: (products || []).map((p) => attachFileLinks(p, ctx)),
         meta: {
           pagination: {
             page: pageNum,
